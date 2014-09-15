@@ -32,18 +32,6 @@ if (!Function.prototype.bind) { // credit to Crockford for this bind function
     };
 }
 
-Array.matrix = function (m, n, initial) { // credit to Crockford for this matrix function 
-  var a, i, j, mat = []; // current private variables
-  for (i = 0; i < m; i += 1) { // loop through the number of m rows
-    a = []; // create second empty array called a for columns
-    for (j = 0; j < n; j += 1) { // loop through number of n columns
-      a[j] = 0; // initialise column array (index = j counter variable)
-    }
-    mat[i] = a; // add a array into mat array to create matrix 
-  }
-  return mat; //return mat array 
-};
-
 
 var TicTacToe = function() { //current function constructor
     this.init();
@@ -75,19 +63,18 @@ TicTacToe.prototype = { // give all instances of TicTacToe the following methods
         this.sq8 = document.getElementById("btn8").value;
         this.sq9 = document.getElementById("btn9").value;
 
-        // current binded events on starbutton and game board
-        
+        // current binded events on clicking reset and gameboard
         this.resetElem.onclick = function() {
             this.reset();
         }.bind(this); // this now bounded to the this parameter of the outer function (instead of writing var that = this)
 
-        this.boardElem.onclick = function(e) { // e initialised as function param 
-            e = e || event; // work around due to IE
-            var source = e.boardElem || e.target;
-            this.updateModel({
-                position:source.getAttribute("id");
-                currentValue: source.value || null         //the exisitng value, this is important so we do not allow a button to clicked twice
-
+        this.boardElem.onclick = function(e) { // current click event handler (e is the event object passed as arg)
+            e = e || event; // event sometimes available through the global variable event (for IE)
+            var source = e.boardElem || e.target || e.srcElement; // event target is the object which the event is associated
+            this.updateModel({ 
+                position:source.getAttribute("id"), // events bubble up the DOM
+                currentValue: source.value || null // the existing value X or O in our case 
+                //this is important so we do not allow a button to clicked twice
             })
         }.bind(this); // this now bounded to the this parameter of the outer function
     },
@@ -99,7 +86,7 @@ TicTacToe.prototype = { // give all instances of TicTacToe the following methods
             sqrArr[i].value = "";
         }
 
-        this.boardArr = []; // current 3 by 3 aray, initialised with 0
+        this.boardArr = [];
 
         for(var n=1;n<=9;n++) {
             this.boardArr[n]=null;
@@ -109,11 +96,12 @@ TicTacToe.prototype = { // give all instances of TicTacToe the following methods
         this.gameOver= false;
         this.xTurn = true;
     }
-    /**
-    * Updtes the model (boardArr)
+    /*
+    * Updates the model (the logic revolves around boardArr)
     * @par
     */
-    updateModel: function(obj) { // 
+    updateModel: function(obj) { // same logic as getSquareValues()
+    // .push(elements); push all values into boardArr    
 
     }
 

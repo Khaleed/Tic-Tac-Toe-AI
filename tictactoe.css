@@ -20,7 +20,7 @@ body {
     text-align: center;
 }   
 
-.row {                                      /* CHANGE THE CSS*/
+.row {                                      
     display: flex;
     flex-flow: row nowrap;
 }
