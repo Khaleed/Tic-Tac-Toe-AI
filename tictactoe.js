@@ -53,16 +53,6 @@ TicTacToe.prototype = { // give all instances of TicTacToe the following methods
         this.resultElem = document.getElementById("results");
         this.statusElem = document.getElementById("status");
         
-        this.sq1 = document.getElementById("btn1").value;
-        this.sq2 = document.getElementById("btn2").value;
-        this.sq3 = document.getElementById("btn3").value;
-        this.sq4 = document.getElementById("btn4").value;
-        this.sq1 = document.getElementById("btn5").value;
-        this.sq6 = document.getElementById("btn6").value;
-        this.sq7 = document.getElementById("btn7").value;
-        this.sq8 = document.getElementById("btn8").value;
-        this.sq9 = document.getElementById("btn9").value;
-
         // current binded events on clicking reset and gameboard
         this.resetElem.onclick = function() {
             this.reset();
@@ -70,9 +60,9 @@ TicTacToe.prototype = { // give all instances of TicTacToe the following methods
 
         this.boardElem.onclick = function(e) { // current click event handler (e is the event object passed as arg)
             e = e || event; // event sometimes available through the global variable event (for IE)
-            var source = e.boardElem || e.target || e.srcElement; // event target is the object which the event is associated
+            var source = e.boardElem || e.target; // event target is the object which the event is associated
             this.updateModel({ 
-                position:source.getAttribute("id"), // events bubble up the DOM
+                position:source.getAttribute("data-position"), // events bubble up the DOM
                 currentValue: source.value || null // the existing value X or O in our case 
                 //this is important so we do not allow a button to clicked twice
             })
@@ -95,19 +85,28 @@ TicTacToe.prototype = { // give all instances of TicTacToe the following methods
         this.moves=0;
         this.gameOver= false;
         this.xTurn = true;
-    }
+    },
     /*
     * Updates the model (the logic revolves around boardArr)
     * @par
     */
     updateModel: function(obj) { // same logic as getSquareValues()
-    // .push(elements); push all values into boardArr    
+    // .push(elements); push all values into boardArr
+        if(obj.currentValue === null) {
+            if (this.xTurn) {
+            // update array & HTML 
+             this.boardArr[obj.position] = "X";
 
-    }
+            } else {
+                this.boardArr[] = "O";
+
+            }
+        }
+    },
 
     getSquareValues: function(square) {
-        var squareValue = document.getElementById(square); // coming from events that bubble up from the init function
-        if(squareValue.value !== "") { // if there is an X or O 
+        //var squareValue = document.getElementById(square); // coming from events that bubble up from the init function
+        //if(squareValue.value !== "") { // if there is an X or O 
            return;
         }
         if (squareValue !== "X" && squareValue !== "O" && this.gameOver !== true) { // stops a square being selected more than once
