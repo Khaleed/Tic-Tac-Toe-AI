@@ -1,8 +1,8 @@
-if (!String.prototype.supplant) { // credit to Crockford for this supplant function
+if(!String.prototype.supplant) { // credit to Crockford for this supplant function
     String.prototype.supplant = function(o) {
         return this.replace(
             /\{([^{}]*)\}/g,
-            function(a, b) {
+            function (a, b) {
                 var r = o[b];
                 return typeof r === 'string' || typeof r === 'number' ? r : a;
             }
@@ -19,8 +19,8 @@ if (!Function.prototype.bind) { // credit to Crockford for this bind function
 
         var aArgs = Array.prototype.slice.call(arguments, 1),
             fToBind = this,
-            fNOP = function() {},
-            fBound = function() {
+            fNOP = function () {},
+            fBound = function () {
                 return fToBind.apply(this instanceof fNOP && oThis ? this : oThis,
                     aArgs.concat(Array.prototype.slice.call(arguments)));
             };
@@ -32,106 +32,69 @@ if (!Function.prototype.bind) { // credit to Crockford for this bind function
     };
 }
 
-
-var TicTacToe = function() { //current function constructor
-    this.init();
+var TicTacToe = function () { //current function constructor
+    this.init(); // ?? ask Eftar
 };
-
-TicTacToe.prototype = { // give all instances of TicTacToe the following methods and values
+// this is the prototype obect associated with the above function constructor 
+TicTacToe.prototype = { // give all instances of TicTacToe class the following methods and values
     // every object linked to the prototype object which they inherit properties from
-    boardElem: null, // empty elements by setting them to null 
+    // the prototype object is where inherited methods and values are deposited
+    boardElem: null, // empty elements by setting them to null
+    resetElem: null,
     resultElem: null,
     statusElem: null,
     xTurn: true,
     gameOver: false,
     moves: 0,
+    boardArr: [],
 
-    init: function() {
+    init: function () { // first function associated with the prototype 
         // bind UI
         this.resetElem = document.getElementById("reset-button");
         this.boardElem = document.getElementById("game-board");
         this.resultElem = document.getElementById("results");
         this.statusElem = document.getElementById("status");
-        
+        this.reset();
         // current binded events on clicking reset and gameboard
-        this.resetElem.onclick = function() {
+        this.resetElem.onclick = function () {
             this.reset();
-        }.bind(this); // this now bounded to the this parameter of the outer function (instead of writing var that = this)
-
-        this.boardElem.onclick = function(e) { // current click event handler (e is the event object passed as arg)
+        }.bind(this); // this now bounded to the this parameter of the outer function 
+        // (instead of writing var that = this)
+        this.boardElem.onclick = function (e) { // current click event handler (e is the event object passed as an arg)
             e = e || event; // event sometimes available through the global variable event (for IE)
-            var source = e.boardElem || e.target; // event target is the object which the event is associated
-            this.updateModel({ 
-                position:source.getAttribute("data-position"), // events bubble up the DOM
+            var source = e.boardElem || e.target; // event target is the object which
+            // the event is associated
+            this.updateModel({ // parse JSON containing position of button clicked & current value
+                position: source.getAttribute("data-position"), // events bubble up the DOM Tree
                 currentValue: source.value || null // the existing value X or O in our case 
-                //this is important so we do not allow a button to clicked twice
+                    //this is important so we do not allow a button to clicked twice
             })
         }.bind(this); // this now bounded to the this parameter of the outer function
     },
 
-    reset: function() {
-        
-        var sqrArr = document.getElementsByTagName("input");
-        for (var i = 0; i < sqrArr.length; i += 1) {
-            sqrArr[i].value = "";
+    reset: function () {
+        for (var i = 0; i <= 8; i += 1) { // null all squares 1 - 9
+            this.boardArr[i] = null;
         }
-
-        this.boardArr = [];
-
-        for(var n=1;n<=9;n++) {
-            this.boardArr[n]=null;
-        }
-
-        this.moves=0;
-        this.gameOver= false;
-        this.xTurn = true;
-    },
-    /*
-    * Updates the model (the logic revolves around boardArr)
-    * @par
-    */
-    updateModel: function(obj) { // same logic as getSquareValues()
-    // .push(elements); push all values into boardArr
-        if(obj.currentValue === null) {
-            if (this.xTurn) {
-            // update array & HTML 
-             this.boardArr[obj.position] = "X";
-
-            } else {
-                this.boardArr[] = "O";
-
-            }
-        }
+        this.moves = 0;
+        this.gameOver = false;
+        this.xTurn = true; // player that moves first will be X
     },
 
-    getSquareValues: function(square) {
-        //var squareValue = document.getElementById(square); // coming from events that bubble up from the init function
-        //if(squareValue.value !== "") { // if there is an X or O 
-           return;
+    // Updates the model
+    updateModel: function(obj) {
+        if  (this.boardArr[obj.position] === null && this.gameOver !== true) { // check if each square is empy & game over 
+            this.moves += 1;
+            this.boardArr[obj.position] = this.xTurn ? "X" : "O"; // ternary operator: test (boolean) and exp 1 if truthy
+            // & exp2 if falsy  
+            this.xTurn = !this.xTurn; // take turns between X and 0
+            this.statusElem.innerHTML = "It is the turn of " + (this.xTurn ? "X" : "O");
         }
-        if (squareValue !== "X" && squareValue !== "O" && this.gameOver !== true) { // stops a square being selected more than once
-            // and stops clicking square when the game is over
-            if (this.xTurn) {
-                this.moves += 1;
-                squareValue.value = "X"; // draw X on board
-                this.xTurn = false; // then it is no longer the turn of X, switch turn to O
-                this.statusElem.innerHTML = "It is the turn of O";
-            } else {
-                this.moves += 1;
-                squareValue.value = "O"; // if is O's turn, draw O
-                this.xTurn = true; // it is now the turn of X
-                this.statusElem.innerHTML = "It is the turn of X";
-            }
-        } else {
-            return; // exit method 
-        }
-        if (this.moves === 9) { // check number of moves to see that 9 moves were made to complete a game
-            this.gameOver = true;
-        }
-        this.checkForWinner();
+        if  (this.boardArr === "")
+            this.checkForWinner(); // update checkForWinner() using the boardArr
     },
 
-    checkForWinner: function() { // check all 8 winning combinations by holding them in an array
+    checkForWinner: function () { // check all 8 winning combinations in boardArr
         
         // check if there are three Xs or three Os in a row  
         if (arr[1] === arr[2] && arr[2] === arr[3] && arr[1] !== "") {
@@ -139,7 +102,7 @@ TicTacToe.prototype = { // give all instances of TicTacToe the following methods
             this.gameOver = true;
             this.statusElem.innerHTML = " ";
             return;
-        } else if (arr[4] === arr[5] && arr[5] === arr[6] && arr[4] !== "") {
+        } /*else if (arr[4] === arr[5] && arr[5] === arr[6] && arr[4] !== "") {
             this.resultElem.innerHTML = arr[4] + ' wins';
             this.gameOver = true;
             this.statusElem.innerHTML = " ";
@@ -183,12 +146,12 @@ TicTacToe.prototype = { // give all instances of TicTacToe the following methods
             this.resultElem.innerHTML = "draw";
             this.gameOver = true; 
             return;
-        }
+        } */
         else {
             this.resultElem.innerHTML = " ";
             return;
         }
-    }
+    } 
 };
 
 var playGame = new TicTacToe(); // new object which inherits from TicTacToe
