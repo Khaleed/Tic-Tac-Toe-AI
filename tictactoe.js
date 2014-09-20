@@ -90,71 +90,45 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
             // exp 1 if truthy & exp2 if falsy  
             this.xTurn = !this.xTurn; // enable taking turns between X and O
             this.statusElem.innerHTML = "It is the turn of " + (this.xTurn ? "X" : "O");
-        }
-        if  (this.boardArr === " ")
-            this.checkForWinner(); // update checkForWinner method using the board array
+        } // need to stop updating model once all squares have been filled
+        this.checkForWinningMove();  
     },
 
-    checkForWinner: function () { // check all 8 winning combinations in boardArr
-        // check if there are three Xs or three Os in a row
-        var winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], 
+    checkForWinningMove: function () { // check all 8 winning combinations in boardArr
+        var winningCombo = [[0, 1, 2], [3, 4, 5], [6, 7, 8],   // all winning combos nested arrays
                             [0, 3, 6], [1, 4, 7], [2, 5, 8], 
                             [0, 4, 8], [2, 4, 6]
-        ];  
-        if (arr[1] === arr[2] && arr[2] === arr[3] && arr[1] !== "") {
-            this.resultElem.innerHTML = arr[1] + ' wins';
-            this.gameOver = true;
-            this.statusElem.innerHTML = " ";
-            return;
-        } /*else if (arr[4] === arr[5] && arr[5] === arr[6] && arr[4] !== "") {
-            this.resultElem.innerHTML = arr[4] + ' wins';
-            this.gameOver = true;
-            this.statusElem.innerHTML = " ";
-            return;
-        } else if (arr[7] === arr[8] && arr[8] == arr[9] && arr[7] !== "") {
-            this.resultElem.innerHTML = arr[7] + ' wins';
-            this.gameOver = true;
-            this.statusElem.innerHTML = " ";
-            return;
+        ];
+        // check if there is three Xs or Os in a row 
+        if (this.boardArr[0] === this.boardArr[1] && this.boardArr[1] === this.boardArr[2] && this.boardArr[0] !== null) {
+            return true;
+            alert(this.boardArr[0] + " wins"); 
+        } else if (this.boardArr[3] === this.boardArr[4] && this.boardArr[4] === this.boardArr[5] && this.boardArr[3] !== null) {
+            return true;
+            alert(this.boardArr[3] + " wins"); 
+        } else if (this.boardArr[6] === this.boardArr[7] && this.boardArr[7] === this.boardArr[8] && this.boardArr[6] !== null) {
+           return true;
+           alert(this.boardArr[6] + " wins");
+        // check if there is three Xs or Os in a column 
+        } else if (this.boardArr[0] === this.boardArr[3] && this.boardArr[3] === this.boardArr[6] && this.boardArr[0] !== null) {
+            return true;
+            alert(this.boardArr[0] + " wins"); 
+        } else if (this.boardArr[1] === this.boardArr[4] && this.boardArr[4] === this.boardArr[7] && this.boardArr[1] !== null) {
+            return true;
+            alert(this.boardArr[1] + " wins"); 
+        } else if (this.boardArr[2] === this.boardArr[5] && this.boardArr[5] === this.boardArr[8] && this.boardArr[2] !== null) {
+            return true;
+            alert(this.boardArr[2] + " wins"); 
+        // check if there is three Xs or Os in a diagonal
+        } else if (this.boardArr[0] === this.boardArr[4] && this.boardArr[4] === this.boardArr[8] && this.boardArr[0] !== null) {
+            return true;
+            alert(this.boardArr[0] + " wins"); 
+        } else if (this.boardArr[2] === this.boardArr[4] && this.boardArr[4] === this.boardArr[6] && this.boardArr[2] !== null) {
+            return true;
+            alert(this.boardArr[2] + " wins"); 
         }
-        // check if there are three Xs or three Os in a column   
-        else if (arr[1] === arr[4] && arr[4] === arr[7] && arr[1] !== "") {
-            this.resultElem.innerHTML = arr[1] + ' wins';
-            this.gameOver = true;
-            this.statusElem.innerHTML = " ";
-            return;
-        } else if (arr[2] === arr[5] && arr[5] === arr[8] && arr[2] !== "") {
-            this.resultElem.innerHTML = arr[2] + ' wins';
-            this.gameOver = true;
-            this.statusElem.innerHTML = " ";
-            return;
-        } else if (arr[3] === arr[6] && arr[6] == arr[9] && arr[3] !== "") {
-            this.resultElem.innerHTML = arr[3] + ' wins';
-            this.gameOver = true;
-            this.statusElem.innerHTML = " ";
-            return;
-        }
-        // check if there are three Xs or three Os in a diagonal
-        else if (arr[7] === arr[5] && arr[5] === arr[3] && arr[7] !== "") {
-            this.resultElem.innerHTML = arr[7] + ' wins';
-            this.gameOver = true;
-            this.statusElem.innerHTML = " ";
-            return;
-        } else if (arr[1] === arr[5] && arr[5] === arr[9] && arr[1] !== "") {
-            this.resultElem.innerHTML = arr[1] + ' wins';
-            this.gameOver = true;
-            this.statusElem.innerHTML = " ";
-            return;
-        } 
-        else if (this.moves === 9){
-            this.resultElem.innerHTML = "draw";
-            this.gameOver = true; 
-            return;
-        } */
-        else {
-            this.resultElem.innerHTML = " ";
-            return;
-        }
+        return false;
+        alert("draw");
     } 
 };
 
