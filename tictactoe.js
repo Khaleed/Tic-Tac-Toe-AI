@@ -32,8 +32,8 @@ if (!Function.prototype.bind) { // credit to Crockford for this bind function
     };
 }
 
-var TicTacToe = function () { // current function constructor
-      this.init(); // ?? ask Eftar
+var TicTacToe = function () { // current function constructor 
+      this.init(); // executed 
   };
 // this is the prototype obect associated with the above function constructor 
 TicTacToe.prototype = { // give all instances of TicTacToe class the following methods and values
@@ -64,10 +64,7 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
             e = e || event; // event sometimes available through the global variable event (for IE)
             var source = e.boardElem || e.target; // event target is the object which
             // the event is associated
-            this.updateModel({ // parse JSON containing position of button clicked & current value
-                position: source.getAttribute("data-position"), // events bubble up the DOM Tree
-                currentValue: source.value || null // the existing value X or O in our case 
-            })
+            this.updateModel(source.getAttribute("data-position")); // events bubble up the DOM Tree
         }.bind(this); // this now bounded to the this parameter of the outer function
     },
 
@@ -82,16 +79,24 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
     },
 
     // Updates the model
-    updateModel: function(obj) {
-        if  (this.boardArr[obj.position] === null && this.gameOver !== true) { // check if each square is empy 
+    updateModel: function(position) {
+        if  (this.boardArr[position] === null && this.gameOver !== true) { // check if each square is empy 
         // & game over 
             this.moves += 1;
-            this.boardArr[obj.position] = this.xTurn ? "X" : "O"; // ternary operator: test (boolean) and 
+            this.boardArr[position] = this.xTurn ? "X" : "O"; // ternary operator: test (boolean) and 
             // exp 1 if truthy & exp2 if falsy  
             this.xTurn = !this.xTurn; // enable taking turns between X and O
             this.statusElem.innerHTML = "It is the turn of " + (this.xTurn ? "X" : "O");
         } // need to stop updating model once all squares have been filled
-        this.checkForWinningMove();  
+        var outcome = this.checkForWinningMove();
+        if (outcome === true) {
+            if (this.xTurn) {
+            alert("X wins");    
+            } 
+            else {
+            alert("O wins");
+            }
+        }  
     },
 
     checkForWinningMove: function () { // check all 8 winning combinations in boardArr
@@ -99,36 +104,38 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
                             [0, 3, 6], [1, 4, 7], [2, 5, 8], 
                             [0, 4, 8], [2, 4, 6]
         ];
-        // check if there is three Xs or Os in a row 
-        if (this.boardArr[0] === this.boardArr[1] && this.boardArr[1] === this.boardArr[2] && this.boardArr[0] !== null) {
-            return true;
-            alert(this.boardArr[0] + " wins"); 
-        } else if (this.boardArr[3] === this.boardArr[4] && this.boardArr[4] === this.boardArr[5] && this.boardArr[3] !== null) {
-            return true;
-            alert(this.boardArr[3] + " wins"); 
-        } else if (this.boardArr[6] === this.boardArr[7] && this.boardArr[7] === this.boardArr[8] && this.boardArr[6] !== null) {
+        
+        /* check if there is three Xs or Os in a row 
+        if (this.boardArr[0] === this.boardArr[1] && this.boardArr[1] === this.boardArr[2] && this.boardArr[0] !== null) { 
+            this.gameOver = true;
+            return true; 
+        } else if (this.boardArr[3] === this.boardArr[4] && this.boardArr[4] === this.boardArr[5] && this.boardArr[3] !== null) { 
+            this.gameOver = true;
+            return true; 
+        } else if  (this.boardArr[6] === this.boardArr[7] && this.boardArr[7] === this.boardArr[8] && this.boardArr[6] !== null) { 
+            this.gameOver = true;
            return true;
-           alert(this.boardArr[6] + " wins");
-        // check if there is three Xs or Os in a column 
-        } else if (this.boardArr[0] === this.boardArr[3] && this.boardArr[3] === this.boardArr[6] && this.boardArr[0] !== null) {
-            return true;
-            alert(this.boardArr[0] + " wins"); 
-        } else if (this.boardArr[1] === this.boardArr[4] && this.boardArr[4] === this.boardArr[7] && this.boardArr[1] !== null) {
-            return true;
-            alert(this.boardArr[1] + " wins"); 
-        } else if (this.boardArr[2] === this.boardArr[5] && this.boardArr[5] === this.boardArr[8] && this.boardArr[2] !== null) {
-            return true;
-            alert(this.boardArr[2] + " wins"); 
+        // check if  there is three Xs or Os in a column 
+        } else if  (this.boardArr[0] === this.boardArr[3] && this.boardArr[3] === this.boardArr[6] && this.boardArr[0] !== null) { 
+            this.gameOver = true;
+            return true; 
+        } else if  (this.boardArr[1] === this.boardArr[4] && this.boardArr[4] === this.boardArr[7] && this.boardArr[1] !== null) { 
+            this.gameOver = true;
+            return true; 
+        } else if  (this.boardArr[2] === this.boardArr[5] && this.boardArr[5] === this.boardArr[8] && this.boardArr[2] !== null) { 
+           this.gameOver = true;
+            return true; 
         // check if there is three Xs or Os in a diagonal
-        } else if (this.boardArr[0] === this.boardArr[4] && this.boardArr[4] === this.boardArr[8] && this.boardArr[0] !== null) {
-            return true;
-            alert(this.boardArr[0] + " wins"); 
-        } else if (this.boardArr[2] === this.boardArr[4] && this.boardArr[4] === this.boardArr[6] && this.boardArr[2] !== null) {
-            return true;
-            alert(this.boardArr[2] + " wins"); 
+        } else if  (this.boardArr[0] === this.boardArr[4] && this.boardArr[4] === this.boardArr[8] && this.boardArr[0] !== null) { 
+           this.gameOver = true;
+            return true; 
+        } else if  (this.boardArr[2] === this.boardArr[4] && this.boardArr[4] === this.boardArr[6] && this.boardArr[2] !== null) { 
+           this.gameOver = true;
+            return true; 
         }
+        this.gameOver = true;
         return false;
-        alert("draw");
+        */
     } 
 };
 
