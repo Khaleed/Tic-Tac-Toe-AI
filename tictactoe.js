@@ -47,6 +47,13 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
     gameOver: false,
     moves: 0,
     boardArr: [],
+    winningCombo: [
+        
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],   // all winning combos nested arrays
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], 
+        [0, 4, 8], [2, 4, 6]        
+        
+        ],
 
     init: function () { // first function associated with the prototype 
         // bind UI
@@ -83,7 +90,7 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
         if  (this.boardArr[position] === null && this.gameOver !== true) { // check if each square is empy 
         // & game over 
             this.moves += 1;
-            this.boardArr[position] = this.xTurn ? "X" : "O"; // ternary operator: test (boolean) and 
+            this.boardArr[position] =   this.xTurn ? "X" : "O"; // ternary operator: test (boolean) and 
             // exp 1 if truthy & exp2 if falsy  
             this.xTurn = !this.xTurn; // enable taking turns between X and O
             this.statusElem.innerHTML = "It is the turn of " + (this.xTurn ? "X" : "O");
@@ -100,42 +107,23 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
     },
 
     checkForWinningMove: function () { // check all 8 winning combinations in boardArr
-        var winningCombo = [[0, 1, 2], [3, 4, 5], [6, 7, 8],   // all winning combos nested arrays
-                            [0, 3, 6], [1, 4, 7], [2, 5, 8], 
-                            [0, 4, 8], [2, 4, 6]
-        ];
         
-        /* check if there is three Xs or Os in a row 
-        if (this.boardArr[0] === this.boardArr[1] && this.boardArr[1] === this.boardArr[2] && this.boardArr[0] !== null) { 
-            this.gameOver = true;
-            return true; 
-        } else if (this.boardArr[3] === this.boardArr[4] && this.boardArr[4] === this.boardArr[5] && this.boardArr[3] !== null) { 
-            this.gameOver = true;
-            return true; 
-        } else if  (this.boardArr[6] === this.boardArr[7] && this.boardArr[7] === this.boardArr[8] && this.boardArr[6] !== null) { 
-            this.gameOver = true;
-           return true;
-        // check if  there is three Xs or Os in a column 
-        } else if  (this.boardArr[0] === this.boardArr[3] && this.boardArr[3] === this.boardArr[6] && this.boardArr[0] !== null) { 
-            this.gameOver = true;
-            return true; 
-        } else if  (this.boardArr[1] === this.boardArr[4] && this.boardArr[4] === this.boardArr[7] && this.boardArr[1] !== null) { 
-            this.gameOver = true;
-            return true; 
-        } else if  (this.boardArr[2] === this.boardArr[5] && this.boardArr[5] === this.boardArr[8] && this.boardArr[2] !== null) { 
-           this.gameOver = true;
-            return true; 
-        // check if there is three Xs or Os in a diagonal
-        } else if  (this.boardArr[0] === this.boardArr[4] && this.boardArr[4] === this.boardArr[8] && this.boardArr[0] !== null) { 
-           this.gameOver = true;
-            return true; 
-        } else if  (this.boardArr[2] === this.boardArr[4] && this.boardArr[4] === this.boardArr[6] && this.boardArr[2] !== null) { 
-           this.gameOver = true;
-            return true; 
+        var i, boardArrIndex = []; 
+        var square = "X" || "O";
+        var indices = this.boardArr.indexOf(square);
+        
+        while (indices !== -1) { // as long as X and O are found 
+            boardArrIndex.push(indices); // push indices into boardindex array
+            indices = this.boardArr.indexOf(square, indices + 1); // increment indices
         }
-        this.gameOver = true;
-        return false;
-        */
+
+        for (i = 0; i < this.winningCombo.length; i += 1) {
+            if(this.winningCombo[i] ===  ) { // check if winning moves indices match indices stored in winning combo
+                return true; 
+            } else {
+                return false;   
+            }
+        }
     } 
 };
 
