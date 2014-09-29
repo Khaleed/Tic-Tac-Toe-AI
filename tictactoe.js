@@ -87,7 +87,7 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
 
     // Updates the model
     updateModel: function(position) {
-        if  (this.boardArr[position] === null && this.gameOver !== true) { // check if each square is empy 
+        if  (this.boardArr[position] === null && this.gameOver !== true) {
         // & game over 
             this.moves += 1;
             this.boardArr[position] =   this.xTurn ? "X" : "O"; // ternary operator: test (boolean) and 
@@ -107,23 +107,43 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
     },
 
     checkForWinningMove: function () { // check all 8 winning combinations in boardArr
-        
-        var i, boardArrIndex = []; 
-        var square = "X" || "O";
-        var indices = this.boardArr.indexOf(square);
-        
-        while (indices !== -1) { // as long as X and O are found 
-            boardArrIndex.push(indices); // push indices into boardindex array
-            indices = this.boardArr.indexOf(square, indices + 1); // increment indices
-        }
 
-        for (i = 0; i < this.winningCombo.length; i += 1) {
-            if(this.winningCombo[i] ===  ) { // check if winning moves indices match indices stored in winning combo
-                return true; 
-            } else {
-                return false;   
-            }
-        }
+        var winningCombo = [[0, 1, 2], [3, 4, 5], [6, 7, 8],   // all winning combos nested arrays
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        //check if there is three Xs or Os in a row
+         if (this.boardArr[this.winningCombo[0][0]] === this.boardArr[this.winningCombo[0][1]] && this.boardArr[this.winningCombo[0][1]] === this.boardArr[this.winningCombo[0][2]] && this.boardArr[0] !== null) {
+         this.gameOver = true;
+         return true;
+         } else if (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
+         this.gameOver = true;
+         return true;
+         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
+         this.gameOver = true;
+         return true;
+         // check if  there is three Xs or Os in a column
+         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
+         this.gameOver = true;
+         return true;
+         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
+         this.gameOver = true;
+         return true;
+         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
+         this.gameOver = true;
+         return true;
+         // check if there is three Xs or Os in a diagonal
+         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
+         this.gameOver = true;
+         return true;
+         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null)) {
+         this.gameOver = true;
+         return true;
+         }
+         //this.gameOver = true;
+         return false;
+
     } 
 };
 
