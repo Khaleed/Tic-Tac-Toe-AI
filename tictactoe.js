@@ -108,43 +108,54 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
 
     checkForWinningMove: function () { // check all 8 winning combinations in boardArr
 
-        var winningCombo = [[0, 1, 2], [3, 4, 5], [6, 7, 8],   // all winning combos nested arrays
+        var winningCombo = [[0, 1, 2], [3, 4, 5], [6, 7, 8],   // all winning combos in nested arrays
             [0, 3, 6], [1, 4, 7], [2, 5, 8],
             [0, 4, 8], [2, 4, 6]
         ];
 
-        //check if there is three Xs or Os in a row
-         if (this.boardArr[this.winningCombo[0][0]] === this.boardArr[this.winningCombo[0][1]] && this.boardArr[this.winningCombo[0][1]] === this.boardArr[this.winningCombo[0][2]] && this.boardArr[0] !== null) {
-         this.gameOver = true;
-         return true;
-         } else if (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
-         this.gameOver = true;
-         return true;
-         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
-         this.gameOver = true;
-         return true;
-         // check if  there is three Xs or Os in a column
-         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
-         this.gameOver = true;
-         return true;
-         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
-         this.gameOver = true;
-         return true;
-         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
-         this.gameOver = true;
-         return true;
-         // check if there is three Xs or Os in a diagonal
-         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null) {
-         this.gameOver = true;
-         return true;
-         } else if  (this.boardArr[this.winningCombo[0][]] === this.boardArr[this.winningCombo[0][]] && this.boardArr[this.winningCombo[0][] === this.boardArr[this.winningCombo[0][]] && this.boardArr[0] !== null)) {
-         this.gameOver = true;
-         return true;
+        // check row 1 
+        if (this.boardArr[this.winningCombo[0][0]] === this.boardArr[this.winningCombo[0][1]] && this.boardArr[this.winningCombo[0][1]] === this.boardArr[this.winningCombo[0][2]] && this.boardArr[0] !== null) {
+            this.gameOver = true;
+            return true;
          }
-         //this.gameOver = true;
+        // check row 2 
+        if (this.boardArr[this.winningCombo[1][0]] === this.boardArr[this.winningCombo[1][1]] && this.boardArr[this.winningCombo[1][1]] === this.boardArr[this.winningCombo[1][2]]&& this.boardArr[this.winningCombo[1][0]] !== null) {
+            this.gameOver = true;
+            return true;
+         }
+        // check row 3 
+        if (this.boardArr[this.winningCombo[2][0]] === this.boardArr[this.winningCombo[2][1]] && this.boardArr[this.winningCombo[2][1]] === this.boardArr[this.winningCombo[2][2]]&& this.boardArr[this.winningCombo[2][0]] !== null) {
+            this.gameOver = true;
+            return true;
+         }
+         // check column 1 
+        if (this.boardArr[this.winningCombo[3][0]] === this.boardArr[this.winningCombo[3][1]] && this.boardArr[this.winningCombo[3][1]] === this.boardArr[this.winningCombo[3][2]]&& this.boardArr[this.winningCombo[3][0]] !== null) {
+            this.gameOver = true;
+            return true;
+         }
+         // check column 2
+         if (this.boardArr[this.winningCombo[4][0]] === this.boardArr[this.winningCombo[4][1]] && this.boardArr[this.winningCombo[4][1]] === this.boardArr[this.winningCombo[4][2]]&& this.boardArr[this.winningCombo[4][0]] !== null) {
+            this.gameOver = true;
+            return true;
+         }
+         // check column 3
+         if (this.boardArr[this.winningCombo[5][0]] === this.boardArr[this.winningCombo[5][1]] && this.boardArr[this.winningCombo[5][1]] === this.boardArr[this.winningCombo[5][2]]&& this.boardArr[this.winningCombo[5][0]] !== null) {
+            this.gameOver = true;
+            return true;
+         }
+         // check diagonal 1
+         if (this.boardArr[this.winningCombo[6][0]] === this.boardArr[this.winningCombo[6][1]] && this.boardArr[this.winningCombo[6][1]] === this.boardArr[this.winningCombo[6][2]]&& this.boardArr[this.winningCombo[6][0]] !== null) {
+            this.gameOver = true;
+            return true;
+         }
+         // check diagonal 2
+         if (this.boardArr[this.winningCombo[7][0]] === this.boardArr[this.winningCombo[7][1]] && this.boardArr[this.winningCombo[7][1]] === this.boardArr[this.winningCombo[7][2]]&& this.boardArr[this.winningCombo[7][0]] !== null) {
+            this.gameOver = true;
+            return true;
+         }
          return false;
-
-    } 
+         alert("no winner"); 
+    }
 };
 
 var playGame = new TicTacToe(); // new object which inherits from TicTacToe
