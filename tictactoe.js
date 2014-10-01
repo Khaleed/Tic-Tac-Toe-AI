@@ -1,5 +1,5 @@
-if(!String.prototype.supplant) { // credit to Crockford for this supplant function
-    String.prototype.supplant = function(o) {
+if (!String.prototype.supplant) { // credit to Crockford for this supplant function
+    String.prototype.supplant = function (o) {
         return this.replace(
             /\{([^{}]*)\}/g,
             function (a, b) {
@@ -11,7 +11,7 @@ if(!String.prototype.supplant) { // credit to Crockford for this supplant functi
 }
 
 if (!Function.prototype.bind) { // credit to Crockford for this bind function  
-    Function.prototype.bind = function(oThis) {
+    Function.prototype.bind = function (oThis) {
         if (typeof this !== "function") {
             // closest thing possible to the ECMAScript 5 internal IsCallable function
             throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
@@ -33,8 +33,8 @@ if (!Function.prototype.bind) { // credit to Crockford for this bind function
 }
 
 var TicTacToe = function () { // current function constructor 
-      this.init(); // executed 
-  };
+    this.init(); 
+};
 // this is the prototype obect associated with the above function constructor 
 TicTacToe.prototype = { // give all instances of TicTacToe class the following methods and values
     // every object linked to the prototype object which they inherit properties from
@@ -48,12 +48,17 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
     moves: 0,
     boardArr: [],
     winningCombo: [
-        
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],   // all winning combos in nested arrays
-        [0, 3, 6], [1, 4, 7], [2, 5, 8], 
-        [0, 4, 8], [2, 4, 6]        
-        
-        ],
+
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8], 
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]
+
+    ],
 
     init: function () { // first function associated with the prototype 
         // bind UI
@@ -76,97 +81,43 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
     },
 
     reset: function () {
-        // each time game is reseted, re-start values 
-        for (var i = 0; i <= 8; i += 1) { // null all squares 1 - 9
-            this.boardArr[i] = null;
+        for (var i = 0; i <= 8; i += 1) { 
+            this.boardArr[i] = null; // initialise all square values with null
         }
         this.moves = 0;
         this.gameOver = false;
-        this.xTurn = true; // player that moves first will be X
+        this.xTurn = true; // X is first player 
     },
 
-    checkForWinningMove: function () { // check all 8 winning combinations in boardArr
-
-        var winningCombo = [[0, 1, 2], [3, 4, 5], [6, 7, 8],   // all winning combos in nested arrays
-            [0, 3, 6], [1, 4, 7], [2, 5, 8],
-            [0, 4, 8], [2, 4, 6]
-        ];
-
-        // check row 1 
-        if (this.boardArr[this.winningCombo[0][0]] === this.boardArr[this.winningCombo[0][1]] && this.boardArr[this.winningCombo[0][1]] 
-            === this.boardArr[this.winningCombo[0][2]] && this.boardArr[0] !== null) {
-            this.gameOver = true;
-            return true;
-         }
-        // check row 2 
-        if (this.boardArr[this.winningCombo[1][0]] === this.boardArr[this.winningCombo[1][1]] && this.boardArr[this.winningCombo[1][1]] 
-            === this.boardArr[this.winningCombo[1][2]]&& this.boardArr[this.winningCombo[1][0]] !== null) {
-            this.gameOver = true;
-            return true;
-         }
-        // check row 3 
-        if (this.boardArr[this.winningCombo[2][0]] === this.boardArr[this.winningCombo[2][1]] && this.boardArr[this.winningCombo[2][1]] 
-            === this.boardArr[this.winningCombo[2][2]]&& this.boardArr[this.winningCombo[2][0]] !== null) {
-            this.gameOver = true;
-            return true;
-         }
-         // check column 1 
-        if (this.boardArr[this.winningCombo[3][0]] === this.boardArr[this.winningCombo[3][1]] && this.boardArr[this.winningCombo[3][1]] 
-            === this.boardArr[this.winningCombo[3][2]]&& this.boardArr[this.winningCombo[3][0]] !== null) {
-            this.gameOver = true;
-            return true;
-         }
-         // check column 2
-         if (this.boardArr[this.winningCombo[4][0]] === this.boardArr[this.winningCombo[4][1]] && this.boardArr[this.winningCombo[4][1]] 
-            === this.boardArr[this.winningCombo[4][2]]&& this.boardArr[this.winningCombo[4][0]] !== null) {
-            this.gameOver = true;
-            return true;
-         }
-         // check column 3
-         if (this.boardArr[this.winningCombo[5][0]] === this.boardArr[this.winningCombo[5][1]] && this.boardArr[this.winningCombo[5][1]] 
-            === this.boardArr[this.winningCombo[5][2]]&& this.boardArr[this.winningCombo[5][0]] !== null) {
-            this.gameOver = true;
-            return true;
-         }
-         // check diagonal 1
-         if (this.boardArr[this.winningCombo[6][0]] === this.boardArr[this.winningCombo[6][1]] && this.boardArr[this.winningCombo[6][1]] 
-            === this.boardArr[this.winningCombo[6][2]]&& this.boardArr[this.winningCombo[6][0]] !== null) {
-            this.gameOver = true;
-            return true;
-         }
-         // check diagonal 2
-         if (this.boardArr[this.winningCombo[7][0]] === this.boardArr[this.winningCombo[7][1]] && this.boardArr[this.winningCombo[7][1]] 
-            === this.boardArr[this.winningCombo[7][2]]&& this.boardArr[this.winningCombo[7][0]] !== null) {
-            this.gameOver = true;
-            return true;
-         }
-         return false;
-         alert("no winner"); 
+    checkForWinningMove: function () { // check all 8 winning combinations
+        // check 3 rows, 3 columns and 2 diagonals
+        for (var i = 0; i < this.winningCombo.length; i += 1) {
+            if (this.boardArr[this.winningCombo[i][0]] === this.boardArr[this.winningCombo[i][1]] && this.boardArr[this.winningCombo[i][1]] 
+                === this.boardArr[this.winningCombo[i][2]] && this.boardArr[this.winningCombo[i][0]] !== null) {
+                this.gameOver = true;
+                return true;
+            }
+        }
     },
 
     // Updates the model
-    updateModel: function(position) {
-        if  (this.boardArr[position] === null && this.gameOver !== true) {
-        // & game over 
-            this.moves += 1;
-            this.boardArr[position] =   this.xTurn ? "X" : "O"; // ternary operator: test (boolean) and 
-            // exp 1 if truthy & exp2 if falsy  
-            this.xTurn = !this.xTurn; // enable taking turns between X and O
-            this.statusElem.innerHTML = "It is the turn of " + (this.xTurn ? "X" : "O");
-        } // need to stop updating model once all squares have been filled
-        var outcome = this.checkForWinningMove();
-        if (outcome === true) {
-            if (this.xTurn === false) { // once there are three Xs in a row/column/diagonal, it will be the turn of O
-            alert("X wins");
-            return;  
-            } 
-            else {
-            alert("O wins");
-            return;
+    updateModel: function (position) {
+        if (this.boardArr[position] === null && this.gameOver !== true) { // check board is empty and game is not over
+            this.moves += 1; // increment game moves
+            this.boardArr[position] = this.xTurn ? "X" : "O"; // current move
+            this.xTurn = !this.xTurn; // current game turn 
+            this.statusElem.innerHTML = "It is the turn of " + (this.xTurn ? "X" : "O"); // current game status
+        }
+        var outcome = this.checkForWinningMove(); // check if there is a winning move
+        if (outcome === true) { // decide who won
+            if (this.xTurn === false) { // when X wins, this.Xturn will be false 
+                this.reset(); // clear the board
+            } else {
+                alert("O wins");
+                this.rest(); // clear the board
             }
-        }  
+        }
     }
-
 };
 
-var playGame = new TicTacToe(); // new object which inherits from TicTacToe
+var playGame = new TicTacToe(); 
