@@ -65,7 +65,7 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
             var source = e.boardElem || e.target; // event target is the object which
             // the event is associated
             this.updateGame(source.getAttribute("data-position")); // events bubble up the DOM Tree
-            this.updateUI(source.getAttribute("data-position"));
+            this.updateUI(source.getAttribute("data-position"), source);
         }.bind(this); // this now bounded to the this parameter of the outer function
     },
 
@@ -89,11 +89,9 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
         }
     },
 
-    updateUI: function(position) {
-        var i, square = document.querySelectorAll("input[type='button']"); // returns an array of all buttons clicked
-        for (i = 0; i < square.length; i += 1) {
-            square[i].value = this.boardArr[position];
-        }
+    updateUI: function(position, element) {
+        var square = input.value;
+        square = this.boardArr[position];
     }, 
     
     // Updates the model
@@ -120,9 +118,7 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
 };
 
 var playGame = new TicTacToe();
-// Update UI (do it at home) 
 // AI - naive player (randomly)n
-// AI
 // naive computer player
 // two in a row - fork try & win
 // encode strategies from wiki 
