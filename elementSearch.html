@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Tutorial - Search if Element exists or not </title>
+</head>
+
+<body>
+    <script>
+        var arr = [1, 2, 3, 4, 8, 9];
+        var val = Math.floor((Math.random() * 10) + 1); //random number between 1 and 10
+
+        function checkForElem (list, elem) {
+            for (var i = 0; i < list.length; i +=1) {
+                if (elem === list[i]) {
+                    return "true";
+                } else {
+                    return "false"; 
+                }
+            }
+        }
+        var found = checkForElem(arr, val); // check if random number is in the array list
+        console.log(found);
+    </script>
+</body>
+
+</html>
