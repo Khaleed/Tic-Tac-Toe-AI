@@ -4,7 +4,6 @@ if (!Function.prototype.bind) { // credit to Crockford for this bind function
             // closest thing possible to the ECMAScript 5 internal IsCallable function
             throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
         }
-
         var aArgs = Array.prototype.slice.call(arguments, 1),
             fToBind = this,
             fNOP = function() {},
@@ -31,9 +30,10 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
     resetElem: null,
     resultElem: null,
     statusElem: null,
+    moves: 0,
     xTurn: true, // there are two players X and O & X makes a move first
     gameOver: false,
-    moves: 0,
+    computerMove: Math.floor(Math.random() * 8 + 0), // generate random numbers of 0 to 8 
     boardArr: [],
     winCombo: [
 
@@ -55,32 +55,21 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
         this.boardElem = document.getElementById("game-board");
         this.resultElem = document.getElementById("results");
         this.statusElem = document.getElementById("status");
-        this.resetGame();
-        // current binded events
+        this.resetGame(); // reset game when game is first initialised
+        // bind main two events
         this.resetElem.onclick = function() {
-            this.resetGame();
+            this.resetGame(); // clear board once reset button is clicked
         }.bind(this); // inner function's this now bounded to the this variable of the outer function 
         // use bind method instead of writing var that = this
-        this.boardElem.onclick = function(e) { // current click event handler (e is the event object passed as an arg)
-            e = e || event; // event sometimes available through the global variable event (for IE)
-            source = e.boardElem || e.target; // event target is the object which the event is associated with
+        this.boardElem.onclick = function(e) { // current click event handler (e is the event object passed as an argument)
+            e = e || event; // event sometimes available through the global variable event for IE - cross browser issue
+            source = e.boardElem || e.target; // event target is the object which the event is associated with - cross browser issue
             this.updateGame({ // pass an object containing the element and its data-position to updateGame method
                 position: source.getAttribute("data-position"),
                 element: source
             });
-            this.playRandom({
-                position: source.getAttribute("data-position"),
-                element: source
-            });
-            this.playBlock({
-                position: source.getAttribute("data-position"),
-                element: source
-            });
-            this.playWin({
-                position: source.getAttribute("data-position"),
-                element: source
-            });
-        }.bind(this); // inner fucntion's this now bounded to the this variable of the outer function
+            this.naiveAI(); // get the AI moves using helper functions
+        }.bind(this); // inner function's this variable now bounded to the this variable of the outer function
     },
 
     resetGame: function() {
@@ -90,45 +79,29 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
         }
         elem = document.getElementsByTagName("input"); // get all the inputs from game-board
         for (j = 0; j <= 8; j += 1) {
-            elem[j].value = ""; // clear the UI
+            elem[j].value = ""; // clear the board
         }
-        this.moves = 0;
-        this.gameOver = false;
-        this.xTurn = true; // X is first player 
+        this.moves = 0; // increment each play
+        this.gameOver = false; 
+        this.xTurn = true; // X is first player, asumme that user always plays first 
     },
 
     checkForWinningMove: function() { // check all 8 winning combinations
-        // check 3 rows, 3 columns and 2 diagonals
+        // check 3 rows, 3 columns and 2 diagonals using winCombo array that holds all winning combinations of the game
         var i;
         for (i = 0; i < this.winCombo.length; i += 1) {
-            if (this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] === 
-                this.boardArr[this.winCombo[i][2]] && this.boardArr[this.winCombo[i][1]] !== null) {
+            if (this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] ===
+                this.boardArr[this.winCombo[i][2]] && this.boardArr[this.winCombo[i][1]] !== null) { 
                 this.gameOver = true;
                 return true;
             }
         }
-        return false;
-        alert("no winner");
-        this.resetGame();
     },
 
-    updateGame: function(object) { // player clicks the squares
-        var outcome, square;
-        if (this.boardArr[object.position] === null && this.gameOver !== true) { // check board array is empty and game isn't over
-            this.moves += 1; // increment game moves
-            this.playerTurn = !this.playerTurn; // alternate between player and computer
-            if (this.playerTurn = false) { // if it's the turn of the computer
-                this.playRandom(); // scan the board and call the appropriate helper function
-            }
-            this.boardArr[object.position] = this.xTurn ? "X" : "O"; // play current move 
-            this.xTurn = !this.xTurn; // current game turn
-            square = object.element;
-            square.value = this.boardArr[object.position];
-            this.statusElem.innerHTML = "It's the turn of " + (this.xTurn ? "X" : "O"); // current game status
-        }
-        outcome = this.checkForWinningMove(); // check if there is a winning move
-        if (outcome === true) { // decide who won
-            if (this.xTurn === false) { // when X wins, this.Xturn will be false
+    winner: function() {
+        var outcome = this.checkForWinningMove(); // check if there is a winning move
+        if (outcome === true) { // if there is a winning move, decide who won
+            if (this.xTurn === false) { // when X wins, this.Xturn set to false
                 alert("X wins");
                 this.resetGame();
             } else {
@@ -138,87 +111,33 @@ TicTacToe.prototype = { // give all instances of TicTacToe class the following m
         }
     },
 
-    // helper function 1: play a random move after checking the state of the board
-    playRandom: function(object) {
-        // check row 1
-        if (this.boardArr[0] !== this.boardArr[1] && this.boardArr[1] !== this.boardArr[2]) {
-            return true; // play a random move as long as a square is available       
-        } 
-        // check row 2
-        if (this.boardArr[3] !== this.boardArr[4] && this.boardArr[4] !== this.boardArr[5]) {
-            return true; // play a random move as long as a square is available        
+    updateGame: function(object) { // player clicks the squares
+        var square = object.element;
+        if (this.boardArr[object.position] === null && this.gameOver !== true) { // check board array is null and game isn't over
+            this.moves += 1; // increment game moves 
+            this.boardArr[object.position] = "X"; // human's player current move
+            this.xTurn = false; 
+            square.value = this.boardArr[object.position]; // udpate UI Once a human player makes a move
+            this.statusElem.innerHTML = "It's the turn of " + (this.xTurn ? "X" : "O"); // current game status 
         }
-        //check row 3
-        if (this.boardArr[6] !== this.boardArr[7] && this.boardArr[7] !== this.boardArr[8]) {
-            return true; // play a random move as long as a square is available        
-        }
-        // check colum1
-        if (this.boardArr[0] !== this.boardArr[3] && this.boardArr[3] !== this.boardArr[6]) {
-            return true; // play a random move as long as a square is available        
-        }
-        //check column2
-        if (this.boardArr[1] !== this.boardArr[4] && this.boardArr[4] !== this.boardArr[7]) {
-            return true; // play a random move as long as a square is available     
-        }
-        //check column 3
-        if (this.boardArr[2] !== this.boardArr[5] && this.boardArr[5] !== this.boardArr[8]) {
-            return true; // play a random move as long as a  square is available     
-        }
-        // check diagonal 1
-        if (this.boardArr[0] !== this.boardArr[4] && this.boardArr[4] !== this.boardArr[8]) {
-            return true; // play a random move as long as a square is available     
-        }
-        //check diagonal 2
-        if (this.boardArr[2] !== this.boardArr[4] && this.boardArr[4] !== this.boardArr[6]) {
-            return true; // play a random move as long as a square is available     
-        }
+        this.winner(); // check for winner
     },
 
-    // helper function 2: block the opponent once he or she has two in a row, column, diagonal
-    playBlock: function(object) {
-        // block a two-in-a-row move
-         if (this.boardArr[0] == this.boardArr[1] && this.boardArr[1] == this.boardArr[2]) {
-            return true; // play a blocking move to avoid three in a squence        
-        } 
-        // check row 2
-        if (this.boardArr[3] == this.boardArr[4] && this.boardArr[4] == this.boardArr[5]) {
-            return true; // play a blocking move to avoid three in a squence`        
+    playRandom: function() {
+        // play random move by generating random numbers and checking space is available!
+        var square = document.getElementsByTagName("input");
+        if (this.boardArr[this.computerMove] === null && this.gameOver !== true) {
+            this.moves += 1;
+            this.boardArr[this.computerMove] = "O"; // computer plays
+            this.xTurn = true;
+            square[this.computerMove].value = this.boardArr[this.computerMove]; // update UI after computer plays a move
         }
-        //check row 3
-        if (this.boardArr[6] == this.boardArr[7] && this.boardArr[7] == this.boardArr[8]) {
-            return true; // play a blocking move to avoid three in a squence`        
-        }
-        // check colum1
-        if (this.boardArr[0] == this.boardArr[3] && this.boardArr[3] == this.boardArr[6]) {
-            return true; // play a blocking move to avoid three in a squence`        
-        }
-        //check column2
-        if (this.boardArr[1] == this.boardArr[4] && this.boardArr[4] == this.boardArr[7]) {
-            return true; // play a blocking move to avoid three in a squence`     
-        }
-        //check column 3
-        if (this.boardArr[2] == this.boardArr[5] && this.boardArr[5] == this.boardArr[8]) {
-            return true; // play a blocking move to avoid three in a squence`     
-        }
-        // check diagonal 1
-        if (this.boardArr[0] == this.boardArr[4] && this.boardArr[4] == this.boardArr[8]) {
-            return true; // play a blocking move to avoid three in a squence`     
-        }
-        //check diagonal 2
-        if (this.boardArr[2] == this.boardArr[4] && this.boardArr[4] == this.boardArr[6]) {
-            return true; // play a blocking move to avoid three in a squence`     
-        }
+        this.winner(); // check for winner 
     },
-    // helper function 3: if there is two in a row, column, or diagonal for the computer, play to win to get 3 in a squence
-    playWin: function(object) {
-        // play to win if I have two squares in a row, column or diagonals
-    },
-    // naivePlayer method takes into account takes into account the current board state using this.boardArr and returns an update board
-    naivePlayer: function() {
-        if (this.gameOver !== true && this.playerTurn === false) {
-            // scan the board to see the state of the board and return a new state of the board
-            return; // use the helper functions: playRandom, playBlock, playWin after assessing the state of the board
-        }
+
+    // naiveAI method takes into account the current board state using this.boardArr and returns an update board
+    naiveAI: function() {
+        this.playRandom();
     }
 };
 
