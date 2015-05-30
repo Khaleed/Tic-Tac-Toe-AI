@@ -2,38 +2,64 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <title>Tic-Tac-Toe</title>
-  <link rel="stylesheet" type="text/css" href="tictactoe.css">
+    <meta charset="utf-8">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" type="text/css" href="tictactoe.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans">
 </head>
 
 <body>
-  <h1 id="header">Tic-Tac-Toe</h1>
-  <div id="main-wrapper">
-    <div id="game-board">
-      <div class="row">
-        <div><input type="button" data-position="0"></div>
-        <div><input type="button" data-position="1"></div>
-        <div><input type="button" data-position="2"></div>
-      </div>
-      <div class="row">
-        <div><input type="button" data-position="3"></div>
-        <div><input type="button" data-position="4"></div>
-        <div><input type="button" data-position="5"></div>
-      </div>
-      <div class="row">
-        <div><input type="button" data-position="6"></div>
-        <div><input type="button" data-position="7"></div>
-        <div><input type="button" data-position="8"></div>
-      </div>
+    <div id="main-wrapper">
+        <h1 id="header">Tic-Tac-Toe</h1>
+            <div id="game-wrapper">
+            <!-- use a table as everything is formatted for me-->
+            <table id="game-board">
+                <tbody>
+                    <tr class="row">
+                        <td>
+                            <input class="square" id="btn1" type="button" autofocus="true" value=" " data-position="0">
+                        </td>
+                        <td>
+                            <input class="square" id="btn2" type="button" autofocus="true" value=" " data-position="1">
+                        </td>
+                        <td>
+                            <input class="square" id="btn3" type="button" autofocus="true" value=" " data-position="2">
+                        </td>
+                    </tr>
+                    <tr class="row" data-position="">
+                        <td>
+                            <input class="square" id="btn4" type="button" autofocus="true" value=" " data-position="3">
+                        </td>
+                        <td>
+                            <input class="square" id="btn5" type="button" autofocus="true" value=" " data-position="4">
+                        </td>
+                        <td>
+                            <input class="square" id="btn6" type="button" autofocus="true" value=" " data-position="5">
+                        </td>
+                    </tr>
+                    <tr class="row" data-position="">
+                        <td>
+                            <input class="square" id="btn7" type="button" autofocus="true" value=" " data-position="6">
+                        </td>
+                        <td>
+                            <input class="square" id="btn8" type="button" autofocus="true" value=" " data-position="7">
+                        </td>
+                        <td>
+                            <input class="square" id="btn9" type="button" autofocus="true" value=" " data-position="8">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="button-wrapper">
+                <button id="start-button">Re-Start</button>
+            </div>
+            <br>
+            <div id="results"></div>
+            <br>
+            <div id="status"></div>
+        </div>
     </div>
-    <div id="button-wrapper">
-      <button id="reset-game">Restart Game</button>
-    </div><br>
-    <div id="results"></div><br>
-    <div id="status"></div>
-  </div>
-  <script src="tictactoe.js"></script>
+    <script src="tictactoe.js"></script>
 </body>
 
 </html>
