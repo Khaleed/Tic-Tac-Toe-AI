@@ -154,38 +154,27 @@ Author: Khalid Omar Ali
 
         // logic for AI's board click
         aiConflict: function(board, randPos) {
-            if (!this.isSquareAvailable(board, randPos)) {
-                return randPos;
-            }
+            var condition;
+            condition = !this.isSquareAvailable(board, randPos);
+            while(condition) {
+                randPos = this.aiRandomNo();
+                condition = false;
+            } 
         },
-
         // AI render's move
         aiRandomPlay: function(board, randPos) {
             // play random move by generating random numbers and checking space is available!
-            var condition = this.aiTurn();
-            console.log(this.aiTurn());
             randPos = this.aiRandomNo();
-            console.log(this.aiRandomNo());
-            while (condition) {
-                console.log("the while loop condition is " +  condition);
                 // if space is available, play AI move
                 if (this.isSquareAvailable(this.boardArr, randPos)) {
-                    console.log(this.isSquareAvailable(this.boardArr, randPos));  
                     this.moves += 1;
-                    console.log("move number " + this.moves);
                     board[randPos] = "O";
-                    console.log(" what is the in the board array is " + board[randPos]); 
                     this.squares[randPos].value = board[randPos];
-                    console.log("draw on the board " + this.squares[randPos].value); 
                     this.xTurn = true; 
                 } else {
                     // pull out another random index out of the pool
                     this.aiConflict(board, randPos);
-                    console.log("if there is no space, pick a new number " + this.aiConflict(board, randPos)); 
                 }
-                condition = false;
-                console.log("the while loop condition is " + condition);          
-            }
         },
         // AI method returns an updated board
         ai: function() {
