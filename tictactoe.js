@@ -96,15 +96,15 @@ Author: Khalid Omar Ali
         checkForWinningMove: function() { // check 3 rows, 3 columns and 2 diagonals using winCombo array that holds all winning combinations of the game
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
-                if (this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] === 
+                if (this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] ===
                     this.boardArr[this.winCombo[i][2]] && this.boardArr[this.winCombo[i][1]] !== null) {
                     return true;
-                } 
+                }
             }
         },
 
         validMoves: function() {
-            if(this.moves === 9) {
+            if (this.moves === 9) {
                 return this.moves;
             }
         },
@@ -139,7 +139,7 @@ Author: Khalid Omar Ali
             return this.xTurn === false && this.gameOver === false;
         },
 
-        // unique random number generator for naiveAI
+        // unique random number generator for naive AI
         aiRandomNo: function() {
             var numberpool = [0, 1, 2, 3, 4, 5, 6, 7, 8],
                 randomIndex = Math.floor(Math.random() * 9),
@@ -151,6 +151,14 @@ Author: Khalid Omar Ali
             pickNo = numberpool.splice(randomIndex, 1);
             return pickNo;
         },
+
+        // logic for AI's board click
+        aiConflict: function(board, randPos) {
+            if (!this.isSquareAvailable(board, randPos)) {
+                return randPos;
+            }
+        },
+
         // AI render's move
         aiRandomPlay: function(board, randPos) {
             // play random move by generating random numbers and checking space is available!
@@ -164,7 +172,7 @@ Author: Khalid Omar Ali
                 if (this.isSquareAvailable(this.boardArr, randPos)) {
                     console.log(this.isSquareAvailable(this.boardArr, randPos));  
                     this.moves += 1;
-                    console.log("move number " + this.moves += 1);
+                    console.log("move number " + this.moves);
                     board[randPos] = "O";
                     console.log(" what is the in the board array is " + board[randPos]); 
                     this.squares[randPos].value = board[randPos];
@@ -172,37 +180,41 @@ Author: Khalid Omar Ali
                     this.xTurn = true; 
                 } else {
                     // pull out another random index out of the pool
-                    randPos = this.aiRandomNo();
-                    console.log("if there is no space, pick a new number " + this.aiRandomNo()); 
+                    this.aiConflict(board, randPos);
+                    console.log("if there is no space, pick a new number " + this.aiConflict(board, randPos)); 
                 }
                 condition = false;
                 console.log("the while loop condition is " + condition);          
             }
         },
-        // naiveAI method takes into account the current board state using boardArr and returns an updated board
+        // AI method returns an updated board
         ai: function() {
-            this.aiRandomPlay(this.boardArr);
+            if (this.aiTurn()) {
+                return this.aiRandomPlay(this.boardArr);
+            }
         },
         // actual game play
-        renderMove: function(board, square, squareElem, squarePos) { // player clicks the squares
+        renderMove: function(board, square, squareElem, squarePos) {
+            // acess object that hold each square elem clicked and it's position
             squareElem = square.elem;
             squarePos = square.position;
-            // stops selecting a square that's already taken
+            // stop drawing on a square that's already taken
             if (squareElem.value !== "") {
                 return;
             }
-            if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && this.gameOver !== true) { // check board array is null and game isn't over
-                this.moves += 1; // increment game move
+            // if it is the turn of the player and a square is available and game is not over
+            if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && this.gameOver !== true) {
+                this.moves += 1;
                 board[squarePos] = "X";
                 this.xTurn = false;
-                squareElem.value = board[squarePos]; // udpate UI
+                squareElem.value = board[squarePos];
                 this.statusElem.innerHTML = "It's the turn of " + (this.xTurn ? "X" : "O");
             }
             // get AI move
             this.ai();
-            // check if the game is over
+            // check if the game is ovee
             this.isGameOver();
         }
     };
-    var playGame = new TicTacToe(); // create a new instance of the GameBoard
+    var playGame = new TicTacToe();
 })();
