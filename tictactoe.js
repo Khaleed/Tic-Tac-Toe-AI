@@ -219,7 +219,8 @@ Author: Khalid Omar Ali
                 this.turnStatus();
             }
             // get AI move as long as all squares haven't been taken
-            if(this.moves !== 9) {
+            // and there hasn't been a winning move
+            if(this.moves !== 9 && !this.checkForWinningMove()) {
                 this.ai();   
             }
             // check if the game is over
