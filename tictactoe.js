@@ -64,7 +64,7 @@ Author: Khalid Omar Ali
             this.xTurn = true; // X is first player
             this.statusElem.innerHTML = "";
         },
-
+        // initialise game
         init: function() {
             // get elements
             var src;
@@ -73,20 +73,28 @@ Author: Khalid Omar Ali
             this.resultElem = document.getElementById("results");
             this.statusElem = document.getElementById("status");
             this.squares = document.getElementsByTagName("input");
-            this.resetGame(); // reset game when game is first initialised
-            // bind main event handlers to reset game amd click board        
+            // reset game when first started
+            this.resetGame();
+            // bind main event handlers to reset game and click board        
             this.resetElem.onclick = function() {
-                this.resetGame(); // clear board once reset button is clicked
+                this.resetGame(); 
             }.bind(this); // inner function's this now bounded to the this variable of the outer function 
             // use bind method instead of writing var that = this
-            this.boardElem.onclick = function(e) { // e is the event object passed as an argument
-                e = e || event; // event sometimes available through the global variable event for IE
-                src = e.boardElem || e.target; // event target is the object which the event is associated with - cross browser issue
-                this.renderMove(this.boardArr, { // pass an object containing the element and its data-position to renderMove method
+            this.boardElem.onclick = function(e) { 
+                // event sometimes available through the global variable event for IE
+                e = e || event; 
+                // event target is the object which the event is associated with
+                src = e.boardElem || e.target;
+                // pass an object containing the element and its data-position to renderMove method 
+                this.renderMove(this.boardArr, { 
                     position: src.getAttribute("data-position"),
                     elem: src
                 });
             }.bind(this);
+        },
+
+        turnStatus: function() {
+            this.statusElem.innerHTML = "It's the turn of " + (this.xTurn ? "X" : "O");
         },
 
         isSquareAvailable: function(board, position) {
@@ -149,16 +157,29 @@ Author: Khalid Omar Ali
             }
             // pic a random number and remove from the pool
             pickNo = numberpool.splice(randomIndex, 1);
-            return pickNo;
+            return pickNo[0];
         },
 
-        // logic for AI's board click
+        aiMove: function (board, randPos) {
+            this.moves += 1;
+            board[randPos] = "O";
+            this.squares[randPos].value = "O";
+            this.xTurn = true;
+            this.turnStatus();
+        },
+
+        // dealing with conflict between naive AI and Human player
         aiConflict: function(board, randPos) {
-            var condition;
-            condition = !this.isSquareAvailable(board, randPos);
+            // if there is no space for AI
+            var condition = !this.isSquareAvailable(board, randPos);
             while(condition) {
+                // generate a new random position
                 randPos = this.aiRandomNo();
-                condition = false;
+                // if there is a space available for AI, exit loop
+                if(this.isSquareAvailable(board, randPos)) {
+                    this.aiMove(board, randPos);
+                    condition = false;
+                } 
             } 
         },
         // AI render's move
@@ -167,12 +188,9 @@ Author: Khalid Omar Ali
             randPos = this.aiRandomNo();
                 // if space is available, play AI move
                 if (this.isSquareAvailable(this.boardArr, randPos)) {
-                    this.moves += 1;
-                    board[randPos] = "O";
-                    this.squares[randPos].value = board[randPos];
-                    this.xTurn = true; 
+                    this.aiMove(board, randPos); 
                 } else {
-                    // pull out another random index out of the pool
+                    // find random position that doesn't conficlt with human player
                     this.aiConflict(board, randPos);
                 }
         },
@@ -192,16 +210,19 @@ Author: Khalid Omar Ali
                 return;
             }
             // if it is the turn of the player and a square is available and game is not over
-            if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && this.gameOver !== true) {
+            if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && 
+                this.gameOver !== true) {
                 this.moves += 1;
                 board[squarePos] = "X";
-                this.xTurn = false;
                 squareElem.value = board[squarePos];
-                this.statusElem.innerHTML = "It's the turn of " + (this.xTurn ? "X" : "O");
+                this.xTurn = false;
+                this.turnStatus();
             }
-            // get AI move
-            this.ai();
-            // check if the game is ovee
+            // get AI move as long as all squares haven't been taken
+            if(this.moves !== 9) {
+                this.ai();   
+            }
+            // check if the game is over
             this.isGameOver();
         }
     };
