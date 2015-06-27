@@ -1,30 +1,13 @@
 /*
+
 Vanilla JavaScript for TicTacToe-AI
 Author: Khalid Omar Ali
+
 */
 
 (function() {
 
     'use strict';
-
-    // var socket = io.connect("http://localhost:3000");
-    if (!Function.prototype.bind) { // credit to Crockford for this bind function  
-        Function.prototype.bind = function(oThis) {
-            if (typeof this !== "function") {
-                // closest thing possible to the ECMAScript 5 internal IsCallable function
-                throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
-            }
-            var aArgs = Array.prototype.slice.call(arguments, 1),
-                fToBind = this,
-                fNOP = function() {},
-                fBound = function() {
-                    return fToBind.apply(this instanceof fNOP && oThis ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
-                };
-            fNOP.prototype = this.prototype;
-            fBound.prototype = new fNOP();
-            return fBound;
-        };
-    }
 
     var TicTacToe = function() { // current function constructor 
         this.init(); // constructor invocation method - this bound to the new object 
@@ -210,8 +193,7 @@ Author: Khalid Omar Ali
                 return;
             }
             // if it is the turn of the player and a square is available and game is not over
-            if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && 
-                this.gameOver !== true) {
+            if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && this.gameOver !== true) {
                 this.moves += 1;
                 board[squarePos] = "X";
                 squareElem.value = board[squarePos];
