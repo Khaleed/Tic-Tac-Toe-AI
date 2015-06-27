@@ -9,10 +9,10 @@ Author: Khalid Omar Ali
 
     'use strict';
 
-    var TicTacToe = function() { // current function constructor 
-        this.init(); // constructor invocation method - this bound to the new object 
+    var TicTacToe = function() { 
+        this.init();  
     };
-    // this is the prototype object associated with the above function constructor 
+
     TicTacToe.prototype = {
         // set initial game state
         boardElem: null,
@@ -37,32 +37,32 @@ Author: Khalid Omar Ali
         resetGame: function() {
             var elem, i, j;
             for (i = 0; i <= 8; i += 1) {
-                this.boardArr[i] = null; // set all values of board array to null
+                this.boardArr[i] = null; 
             }
             for (j = 0; j <= 8; j += 1) {
-                this.squares[j].value = ""; // clear the board UI
+                this.squares[j].value = ""; 
             }
-            this.moves = 0; // current move incrementor
+            this.moves = 0; 
             this.gameOver = false;
-            this.xTurn = true; // X is first player
+            // X is always the first player
+            this.xTurn = true; 
             this.statusElem.innerHTML = "";
         },
+
         // initialise game
         init: function() {
-            // get elements
             var src;
             this.resetElem = document.getElementById("start-button");
             this.boardElem = document.getElementById("game-board");
             this.resultElem = document.getElementById("results");
             this.statusElem = document.getElementById("status");
             this.squares = document.getElementsByTagName("input");
-            // reset game when first started
+            // reset game when a new game is started
             this.resetGame();
             // bind main event handlers to reset game and click board        
             this.resetElem.onclick = function() {
                 this.resetGame(); 
-            }.bind(this); // inner function's this now bounded to the this variable of the outer function 
-            // use bind method instead of writing var that = this
+            }.bind(this);  
             this.boardElem.onclick = function(e) { 
                 // event sometimes available through the global variable event for IE
                 e = e || event; 
@@ -81,10 +81,11 @@ Author: Khalid Omar Ali
         },
 
         isSquareAvailable: function(board, position) {
-            return board[position] === null; // returns true if space is available
+            return board[position] === null; 
         },
 
-        checkForWinningMove: function() { // check 3 rows, 3 columns and 2 diagonals using winCombo array that holds all winning combinations of the game
+        // check 3 rows, 3 columns and 2 diagonals using winCombo array that holds all winning combinations of the game
+        checkForWinningMove: function() { 
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
                 if (this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] ===
@@ -101,7 +102,6 @@ Author: Khalid Omar Ali
         },
 
         drawn: function() {
-            // indices begin at 0
             if (this.validMoves() === 9) {
                 alert("Draw game!");
                 this.resetGame();
@@ -110,8 +110,8 @@ Author: Khalid Omar Ali
 
         won: function(result) {
             result = this.checkForWinningMove();
-            if (result === true) { // if there is a winner
-                if (this.xTurn === false) { // decide if X won or else O won
+            if (result === true) { 
+                if (this.xTurn === false) { 
                     alert("X wins!");
                     this.resetGame();
                 } else {
@@ -122,7 +122,7 @@ Author: Khalid Omar Ali
         },
 
         isGameOver: function() {
-            return this.won() || this.drawn(); // decide the game's outcome
+            return this.won() || this.drawn(); 
         },
 
         // condition for the AI turn
@@ -138,7 +138,7 @@ Author: Khalid Omar Ali
             if (numberpool.length === 0) {
                 throw "no random numbers left";
             }
-            // pic a random number and remove from the pool
+            // pick a random number and remove from the number pool
             pickNo = numberpool.splice(randomIndex, 1);
             return pickNo[0];
         },
@@ -151,7 +151,7 @@ Author: Khalid Omar Ali
             this.turnStatus();
         },
 
-        // dealing with conflict between naive AI and Human player
+        // manage conflict between naive AI and human player
         aiConflict: function(board, randPos) {
             // if there is no space for AI
             var condition = !this.isSquareAvailable(board, randPos);
@@ -165,7 +165,7 @@ Author: Khalid Omar Ali
                 } 
             } 
         },
-        // AI render's move
+        
         aiRandomPlay: function(board, randPos) {
             // play random move by generating random numbers and checking space is available!
             randPos = this.aiRandomNo();
@@ -183,7 +183,7 @@ Author: Khalid Omar Ali
                 return this.aiRandomPlay(this.boardArr);
             }
         },
-        // actual game play
+        
         renderMove: function(board, square, squareElem, squarePos) {
             // acess object that hold each square elem clicked and it's position
             squareElem = square.elem;
@@ -192,7 +192,7 @@ Author: Khalid Omar Ali
             if (squareElem.value !== "") {
                 return;
             }
-            // if it is the turn of the player and a square is available and game is not over
+            // if it is the turn of the human player and a square is available and game is not over
             if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && this.gameOver !== true) {
                 this.moves += 1;
                 board[squarePos] = "X";
@@ -209,5 +209,6 @@ Author: Khalid Omar Ali
             this.isGameOver();
         }
     };
+    // a new instance of the game
     var playGame = new TicTacToe();
 })();
