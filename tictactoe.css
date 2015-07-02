@@ -1,4 +1,5 @@
-/* reset padding, boder and marging properties of all elements to avoid conflict with default browser stylesheet */
+/* reset padding, border and margin properties of all elements 
+to avoid conflict with default browser stylesheet */
 
 body #main-wrapper #header #user-wrapper #game-wrapper #game-board .square #start-button #results #status {
     padding: 0;
