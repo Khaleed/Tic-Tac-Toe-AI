@@ -57,9 +57,8 @@ Author: Khalid Omar Ali
             this.resultElem = document.getElementById("results");
             this.statusElem = document.getElementById("status");
             this.squares = document.getElementsByTagName("input");
-            // reset game when a new game is started
             this.resetGame();
-            // bind main event handlers to reset game and click board        
+            // bind main event handlers       
             this.resetElem.onclick = function() {
                 this.resetGame(); 
             }.bind(this);  
@@ -84,7 +83,7 @@ Author: Khalid Omar Ali
             return board[position] === null; 
         },
 
-        // check 3 rows, 3 columns and 2 diagonals using winCombo array that holds all winning combinations of the game
+        // check 3 rows, 3 columns and 2 diagonals using winCombo array 
         checkForWinningMove: function() { 
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
@@ -143,6 +142,7 @@ Author: Khalid Omar Ali
             return pickNo[0];
         },
 
+        
         aiMove: function (board, randPos) {
             this.moves += 1;
             board[randPos] = "O";
@@ -151,7 +151,7 @@ Author: Khalid Omar Ali
             this.turnStatus();
         },
 
-        // manage conflict between naive AI and human player
+        // manage conflict between AI and human player
         aiConflict: function(board, randPos) {
             // if there is no space for AI
             var condition = !this.isSquareAvailable(board, randPos);
@@ -166,17 +166,19 @@ Author: Khalid Omar Ali
             } 
         },
         
+        // play a random AI move
         aiRandomPlay: function(board, randPos) {
-            // play random move by generating random numbers and checking space is available!
+            // generate random number 
             randPos = this.aiRandomNo();
                 // if space is available, play AI move
                 if (this.isSquareAvailable(this.boardArr, randPos)) {
                     this.aiMove(board, randPos); 
                 } else {
-                    // find random position that doesn't conficlt with human player
+                    // find random position that doesn't conflict with human player
                     this.aiConflict(board, randPos);
                 }
         },
+
         // AI method returns an updated board
         ai: function() {
             if (this.aiTurn()) {
@@ -192,7 +194,8 @@ Author: Khalid Omar Ali
             if (squareElem.value !== "") {
                 return;
             }
-            // if it is the turn of the human player and a square is available and game is not over
+            // if it is the turn of the human player 
+            // and a square is available and game is not over
             if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && this.gameOver !== true) {
                 this.moves += 1;
                 board[squarePos] = "X";
