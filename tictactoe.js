@@ -9,10 +9,14 @@ Author: Khalid Omar Ali
 
     'use strict';
 
-    var TicTacToe = function() { 
-        this.init();  
+    var TicTacToe = function() {
+        // this keyword refers to the new instance of the class 
+        this.init();
     };
 
+    // build a secret object within the constructor
+    // function's prototype property
+    // every created TicTacToe inherits from that Object
     TicTacToe.prototype = {
         // set initial game state
         boardElem: null,
@@ -37,15 +41,15 @@ Author: Khalid Omar Ali
         resetGame: function() {
             var elem, i, j;
             for (i = 0; i <= 8; i += 1) {
-                this.boardArr[i] = null; 
+                this.boardArr[i] = null;
             }
             for (j = 0; j <= 8; j += 1) {
-                this.squares[j].value = ""; 
+                this.squares[j].value = "";
             }
-            this.moves = 0; 
+            this.moves = 0;
             this.gameOver = false;
             // X is always the first player
-            this.xTurn = true; 
+            this.xTurn = true;
             this.statusElem.innerHTML = "";
         },
 
@@ -60,15 +64,16 @@ Author: Khalid Omar Ali
             this.resetGame();
             // bind main event handlers       
             this.resetElem.onclick = function() {
-                this.resetGame(); 
-            }.bind(this);  
-            this.boardElem.onclick = function(e) { 
+                this.resetGame();
+            }.bind(this);
+            this.boardElem.onclick = function(e) {
                 // event sometimes available through the global variable event for IE
-                e = e || event; 
+                e = e || event;
                 // event target is the object which the event is associated with
                 src = e.boardElem || e.target;
-                // pass an object containing the element and its data-position to renderMove method 
-                this.renderMove(this.boardArr, { 
+                // pass an object containing the square element
+                // and its data-position to renderMove method 
+                this.renderMove(this.boardArr, {
                     position: src.getAttribute("data-position"),
                     elem: src
                 });
@@ -80,11 +85,11 @@ Author: Khalid Omar Ali
         },
 
         isSquareAvailable: function(board, position) {
-            return board[position] === null; 
+            return board[position] === null;
         },
 
         // check 3 rows, 3 columns and 2 diagonals using winCombo array 
-        checkForWinningMove: function() { 
+        checkForWinningMove: function() {
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
                 if (this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] ===
@@ -109,8 +114,8 @@ Author: Khalid Omar Ali
 
         won: function(result) {
             result = this.checkForWinningMove();
-            if (result === true) { 
-                if (this.xTurn === false) { 
+            if (result === true) {
+                if (this.xTurn === false) {
                     alert("X wins!");
                     this.resetGame();
                 } else {
@@ -121,7 +126,7 @@ Author: Khalid Omar Ali
         },
 
         isGameOver: function() {
-            return this.won() || this.drawn(); 
+            return this.won() || this.drawn();
         },
 
         // condition for the AI turn
@@ -142,8 +147,8 @@ Author: Khalid Omar Ali
             return pickNo[0];
         },
 
-        
-        aiMove: function (board, randPos) {
+
+        aiMove: function(board, randPos) {
             this.moves += 1;
             board[randPos] = "O";
             this.squares[randPos].value = "O";
@@ -155,28 +160,28 @@ Author: Khalid Omar Ali
         aiConflict: function(board, randPos) {
             // if there is no space for AI
             var condition = !this.isSquareAvailable(board, randPos);
-            while(condition) {
+            while (condition) {
                 // generate a new random position
                 randPos = this.aiRandomNo();
                 // if there is a space available for AI, exit loop
-                if(this.isSquareAvailable(board, randPos)) {
+                if (this.isSquareAvailable(board, randPos)) {
                     this.aiMove(board, randPos);
                     condition = false;
-                } 
-            } 
+                }
+            }
         },
-        
+
         // play a random AI move
         aiRandomPlay: function(board, randPos) {
             // generate random number 
             randPos = this.aiRandomNo();
-                // if space is available, play AI move
-                if (this.isSquareAvailable(this.boardArr, randPos)) {
-                    this.aiMove(board, randPos); 
-                } else {
-                    // find random position that doesn't conflict with human player
-                    this.aiConflict(board, randPos);
-                }
+            // if space is available, play AI move
+            if (this.isSquareAvailable(this.boardArr, randPos)) {
+                this.aiMove(board, randPos);
+            } else {
+                // find random position that doesn't conflict with human player
+                this.aiConflict(board, randPos);
+            }
         },
 
         // AI method returns an updated board
@@ -185,7 +190,7 @@ Author: Khalid Omar Ali
                 return this.aiRandomPlay(this.boardArr);
             }
         },
-        
+
         renderMove: function(board, square, squareElem, squarePos) {
             // acess object that hold each square elem clicked and it's position
             squareElem = square.elem;
@@ -205,13 +210,13 @@ Author: Khalid Omar Ali
             }
             // get AI move as long as all squares haven't been taken
             // and there hasn't been a winning move
-            if(this.moves !== 9 && !this.checkForWinningMove()) {
-                this.ai();   
+            if (this.moves !== 9 && !this.checkForWinningMove()) {
+                this.ai();
             }
             // check if the game is over
             this.isGameOver();
         }
     };
-    // a new instance of the game
+    // a new instance of the TicTacToe class
     var playGame = new TicTacToe();
 })();
