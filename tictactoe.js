@@ -36,6 +36,7 @@ Author: Khalid Omar Ali
             [0, 4, 8],
             [2, 4, 6]
         ],
+
         resetGame: function() {
             var elem, i, j;
             for (i = 0; i <= 8; i += 1) {
@@ -48,7 +49,7 @@ Author: Khalid Omar Ali
             this.gameOver = false;
             // X is always the first player
             this.xTurn = true;
-            this.statusElem.innerHTML = "";
+            this.statusElem.innerHTML = "It's the turn of X";
         },
 
         // initialise game
@@ -97,37 +98,37 @@ Author: Khalid Omar Ali
                 }
             }
         },
-        
+
         // check first and second value in a row
-        checkFirstAndSecondInArow: function(board, position) {
+        checkFirstAndSecondInArow: function(board) {
             var i;
             // iterate through all winning combinations
             for (i = 0; i < this.winCombo.length; i += 1) {
                 // check if the values in first and second positions of the board match and third position is free
                 if (board[this.winCombo[i][0]] === board[this.winCombo[i][1]] && board[this.winCombo[i][1]] !==
                     undefined && board[this.winCombo[i][2]] === undefined) {
-                    this.aiBlockTwoInArow(board, this.winCombo[i][2]);
+                    // pass the free position to a method so it can block it
                     return true;
                 }
             }
         },
-        
+
         // check second and third value in a row
-        checkSecondAndThirdInArow: function(board, position) {
+        checkSecondAndThirdInArow: function(board) {
             var i;
             // iterate through all winning combinations
             for (i = 0; i < this.winCombo.length; i += 1) {
                 // check if the values in first and second positions of the board match and third position is free
                 if (board[this.winCombo[i][1]] === board[this.winCombo[i][2]] && board[this.winCombo[i][2]] !==
                     undefined && board[this.winCombo[i][0]] === undefined) {
-                    this.aiBlockTwoInArow(board, this.winCombo[i][0]);
+                    // pass the free position to a method so it can block it 
                     return true;
                 }
             }
         },
 
-        twoInArow: function(board, position) {
-            return this.checkFirstAndSecondInArow(board, position) || this.checkSecondAndThirdInArow(board, position);
+        twoInArow: function(board) {
+            return this.checkFirstAndSecondInArow(board) || this.checkSecondAndThirdInArow(board);
         },
 
         validMoves: function() {
@@ -227,16 +228,14 @@ Author: Khalid Omar Ali
             }
         },
 
-        aiBlockTwoInArow: function(board, position) {
-            if (this.isSquareAvailable(board, position)) {
-                return this.renderAiMove(board, position);
-            }
-        },
+        // aiBlockTwoInArow: function(board, position) {
+        //     position = some method that gets free position when there is two in a row
+        // },
 
         // returns an updated board when AI moves are made
         ai: function() {
             // if it is the turn of AI and there is no two in a row move by hunan player
-            if (this.aiTurn() && this.twoInArow() !== true) {
+            if (this.aiTurn() && this.twoInArow(this.boardArr) !== true) {
                 // just play randomly
                 return this.aiRandomMove(this.boardArr);
             } else {
