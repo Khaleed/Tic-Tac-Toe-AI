@@ -1,4 +1,4 @@
-/*
+/*  
 
 Vanilla JavaScript for TicTacToe-AI
 Author: Khalid Omar Ali
@@ -13,7 +13,6 @@ Author: Khalid Omar Ali
         // this keyword refers to the new instance of the class 
         this.init();
     };
-
     // build a secret object within the constructor
     // function's prototype property
     // every created TicTacToe inherits from that Object
@@ -37,11 +36,10 @@ Author: Khalid Omar Ali
             [0, 4, 8],
             [2, 4, 6]
         ],
-
         resetGame: function() {
             var elem, i, j;
             for (i = 0; i <= 8; i += 1) {
-                this.boardArr[i] = null;
+                this.boardArr[i] = undefined;
             }
             for (j = 0; j <= 8; j += 1) {
                 this.squares[j].value = "";
@@ -55,7 +53,7 @@ Author: Khalid Omar Ali
 
         // initialise game
         init: function() {
-            var src;
+            // get main elements
             this.resetElem = document.getElementById("start-button");
             this.boardElem = document.getElementById("game-board");
             this.resultElem = document.getElementById("results");
@@ -65,15 +63,16 @@ Author: Khalid Omar Ali
             // bind main event handlers       
             this.resetElem.onclick = function() {
                 this.resetGame();
-            }.bind(this);
+            }.bind(this); // inner function has access to the this value of the outer function
             this.boardElem.onclick = function(e) {
+                var src;
                 // event sometimes available through the global variable event for IE
                 e = e || event;
                 // event target is the object which the event is associated with
                 src = e.boardElem || e.target;
-                // pass an object containing the square element
-                // and its data-position to renderMove method 
-                this.renderMove(this.boardArr, {
+                // pass boardArr and object containing the square element
+                // and its data-position to renderAllMoves method 
+                this.renderAllMoves(this.boardArr, {
                     position: src.getAttribute("data-position"),
                     elem: src
                 });
@@ -85,18 +84,50 @@ Author: Khalid Omar Ali
         },
 
         isSquareAvailable: function(board, position) {
-            return board[position] === null;
+            return board[position] === undefined;
         },
 
         // check 3 rows, 3 columns and 2 diagonals using winCombo array 
-        checkForWinningMove: function() {
+        checkForWinningMove: function(board) {
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
-                if (this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] ===
-                    this.boardArr[this.winCombo[i][2]] && this.boardArr[this.winCombo[i][1]] !== null) {
+                if (board[this.winCombo[i][0]] === board[this.winCombo[i][1]] && board[this.winCombo[i][1]] ===
+                    board[this.winCombo[i][2]] && board[this.winCombo[i][1]] !== undefined) {
                     return true;
                 }
             }
+        },
+        
+        // check first and second value in a row
+        checkFirstAndSecondInArow: function(board, position) {
+            var i;
+            // iterate through all winning combinations
+            for (i = 0; i < this.winCombo.length; i += 1) {
+                // check if the values in first and second positions of the board match and third position is free
+                if (board[this.winCombo[i][0]] === board[this.winCombo[i][1]] && board[this.winCombo[i][1]] !==
+                    undefined && board[this.winCombo[i][2]] === undefined) {
+                    this.aiBlockTwoInArow(board, this.winCombo[i][2]);
+                    return true;
+                }
+            }
+        },
+        
+        // check second and third value in a row
+        checkSecondAndThirdInArow: function(board, position) {
+            var i;
+            // iterate through all winning combinations
+            for (i = 0; i < this.winCombo.length; i += 1) {
+                // check if the values in first and second positions of the board match and third position is free
+                if (board[this.winCombo[i][1]] === board[this.winCombo[i][2]] && board[this.winCombo[i][2]] !==
+                    undefined && board[this.winCombo[i][0]] === undefined) {
+                    this.aiBlockTwoInArow(board, this.winCombo[i][0]);
+                    return true;
+                }
+            }
+        },
+
+        twoInArow: function(board, position) {
+            return this.checkFirstAndSecondInArow(board, position) || this.checkSecondAndThirdInArow(board, position);
         },
 
         validMoves: function() {
@@ -112,8 +143,8 @@ Author: Khalid Omar Ali
             }
         },
 
-        won: function(result) {
-            result = this.checkForWinningMove();
+        won: function() {
+            var result = this.checkForWinningMove(this.boardArr);
             if (result === true) {
                 if (this.xTurn === false) {
                     alert("X wins!");
@@ -137,7 +168,8 @@ Author: Khalid Omar Ali
         // unique random number generator for naive AI
         aiRandomNo: function() {
             var numberpool = [0, 1, 2, 3, 4, 5, 6, 7, 8],
-                randomIndex = Math.floor(Math.random() * 9),
+                // generate random index between 0 and 8
+                randomIndex = Math.floor(Math.random() * numberpool.length),
                 pickNo;
             if (numberpool.length === 0) {
                 throw "no random numbers left";
@@ -147,76 +179,92 @@ Author: Khalid Omar Ali
             return pickNo[0];
         },
 
-
-        aiMove: function(board, randPos) {
+        renderAiMove: function(board, position) {
             this.moves += 1;
-            board[randPos] = "O";
-            this.squares[randPos].value = "O";
+            board[position] = "O";
+            this.squares[position].value = "O";
             this.xTurn = true;
+            this.turnStatus();
+        },
+
+        renderHumanMove: function(board, position, squareElem) {
+            // if it is the turn of the human player 
+            // and a square is available and game is not over
+            this.moves += 1;
+            board[position] = "X";
+            squareElem.value = board[position];
+            this.xTurn = false;
             this.turnStatus();
         },
 
         // manage conflict between AI and human player
         aiConflict: function(board, randPos) {
-            // if there is no space for AI
+            // if there is no space on board for AI
+            // based on the initial random position
             var condition = !this.isSquareAvailable(board, randPos);
             while (condition) {
                 // generate a new random position
                 randPos = this.aiRandomNo();
-                // if there is a space available for AI, exit loop
+                // if there is a space available for AI with 
+                // the new random position, exit loop
                 if (this.isSquareAvailable(board, randPos)) {
-                    this.aiMove(board, randPos);
+                    this.renderAiMove(board, randPos);
                     condition = false;
                 }
             }
         },
 
         // play a random AI move
-        aiRandomPlay: function(board, randPos) {
+        aiRandomMove: function(board, randPos) {
             // generate random number 
             randPos = this.aiRandomNo();
             // if space is available, play AI move
-            if (this.isSquareAvailable(this.boardArr, randPos)) {
-                this.aiMove(board, randPos);
+            if (this.isSquareAvailable(board, randPos)) {
+                return this.renderAiMove(board, randPos);
             } else {
                 // find random position that doesn't conflict with human player
                 this.aiConflict(board, randPos);
             }
         },
 
-        // AI method returns an updated board
-        ai: function() {
-            if (this.aiTurn()) {
-                return this.aiRandomPlay(this.boardArr);
+        aiBlockTwoInArow: function(board, position) {
+            if (this.isSquareAvailable(board, position)) {
+                return this.renderAiMove(board, position);
             }
         },
 
-        renderMove: function(board, square, squareElem, squarePos) {
-            // acess object that hold each square elem clicked and it's position
-            squareElem = square.elem;
-            squarePos = square.position;
+        // returns an updated board when AI moves are made
+        ai: function() {
+            // if it is the turn of AI and there is no two in a row move by hunan player
+            if (this.aiTurn() && this.twoInArow() !== true) {
+                // just play randomly
+                return this.aiRandomMove(this.boardArr);
+            } else {
+                // block two in a row
+                return this.aiBlockTwoInArow(this.boardArr);
+            }
+        },
+        // render human and AI moves on the board
+        renderAllMoves: function(board, squareObj) {
+            // acess object that holds each square elem clicked and it's position
+            var squareElem = squareObj.elem,
+                squarePos = squareObj.position;
             // stop drawing on a square that's already taken
             if (squareElem.value !== "") {
                 return;
-            }
-            // if it is the turn of the human player 
-            // and a square is available and game is not over
+            } // draw human player's move
             if (this.xTurn !== false && this.isSquareAvailable(board, squarePos) && this.gameOver !== true) {
-                this.moves += 1;
-                board[squarePos] = "X";
-                squareElem.value = board[squarePos];
-                this.xTurn = false;
-                this.turnStatus();
+                this.renderHumanMove(board, squarePos, squareElem);
             }
             // get AI move as long as all squares haven't been taken
             // and there hasn't been a winning move
-            if (this.moves !== 9 && !this.checkForWinningMove()) {
+            if (this.moves !== 9 && !this.checkForWinningMove(board)) {
                 this.ai();
             }
-            // check if the game is over
+            // check if the game is over and show the game result
             this.isGameOver();
         }
     };
     // a new instance of the TicTacToe class
-    var playGame = new TicTacToe();
+    var myTicTacToe = new TicTacToe();
 })();
