@@ -8,7 +8,7 @@ body #main-wrapper #header #user-wrapper #game-wrapper #game-board .square #star
 }
 
 body {
-    font: bold 2em "Open Sans", sans;
+    font: bold 2em sans-serif;
     text-align: center;
     text-shadow: 1px 1px gray;
 }
@@ -19,7 +19,7 @@ body {
 }
 
 #header {
-    font: bold 1em "Open Sans", sans;
+    font: bold 1em sans-serif;
 }
 
 #game-wrapper {
