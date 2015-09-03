@@ -100,7 +100,7 @@ Author: Khalid Omar Ali
         },
 
         // check if first and second positions have the same value
-        checkFirstAndSecondInRow: function(board) {
+        aiCheckFirstAndSecondInRow: function(board) {
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
                 if (this.xTurn !== true && board[this.winCombo[i][0]] === board[this.winCombo[i][1]] && board[this.winCombo[i][1]] !== undefined &&
@@ -113,7 +113,7 @@ Author: Khalid Omar Ali
         },
 
         // check second and third positions have the same value
-        checkSecondAndThirdInRow: function(board) {
+        aiCheckSecondAndThirdInRow: function(board) {
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
                 if (this.xTurn !== true && board[this.winCombo[i][1]] === board[this.winCombo[i][2]] && board[this.winCombo[i][2]] !== undefined &&
@@ -125,8 +125,8 @@ Author: Khalid Omar Ali
             }
         },
 
-        twoInRow: function(board) {
-            return this.checkFirstAndSecondInRow(board) || this.checkSecondAndThirdInRow(board);
+        aiCheckTwoInRow: function(board) {
+            return this.aiCheckFirstAndSecondInRow(board) || this.aiCheckSecondAndThirdInRow(board);
         },
 
         getValidMoves: function() {
@@ -225,9 +225,9 @@ Author: Khalid Omar Ali
 
         ai: function(board) {
             // if it is the turn of AI and there are no two same values in a row 
-            if (this.aiTurn() && this.twoInRow(board) !== true) {
+            if (this.aiTurn() && this.aiCheckTwoInRow(board) !== true) {
                 // make a random move to a free spot
-                return this.aiRandomMove(board);
+               return this.aiRandomMove(board);
             }
         },
 
@@ -238,10 +238,10 @@ Author: Khalid Omar Ali
                 return;
             }
             // if it is the turn of first player and a square is free and game is not over
-            if (this.xTurn !== false && this.isSquareAvailable(board, square.pos) && this.gameOver !== true) {
+            if (this.xTurn === true && this.isSquareAvailable(board, square.pos) && this.gameOver === false) {
                 this.renderPlayer1Move(board, square);
             }
-            if (!this.getValidMoves() && !this.checkForWinningMove(board)) {
+            if (!this.isGameOver()) {
                 this.ai(board);
             }
             // check if the game is over and show the game result
