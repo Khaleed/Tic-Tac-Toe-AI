@@ -199,6 +199,9 @@ Author: Khalid Omar Ali
             // keep looping while a square is not available
             while (condition) {
                 randPos = this.getRandomPos();
+                if(this.isSquareAvailable(board, randPos)) {
+                    this.renderAiMove(board, randPos);    
+                }
                 // as soon as square is available, exit loop
                 condition = this.isSquareAvailable(board, randPos);
                 console.log("after conflict is managed, new randPos passed to render Ai is " + randPos);
