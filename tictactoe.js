@@ -105,7 +105,6 @@ Author: Khalid Omar Ali
             for (i = 0; i < this.winCombo.length; i += 1) {
                 if (this.xTurn !== true && board[this.winCombo[i][0]] === board[this.winCombo[i][1]] && board[this.winCombo[i][1]] !== undefined &&
                     board[this.winCombo[i][2]] === undefined) {
-                    // pass the empty 3rd position 
                     this.aiBlockTwoInRow(board, this.winCombo[i][2]);
                     return true;
                 }
@@ -118,7 +117,6 @@ Author: Khalid Omar Ali
             for (i = 0; i < this.winCombo.length; i += 1) {
                 if (this.xTurn !== true && board[this.winCombo[i][1]] === board[this.winCombo[i][2]] && board[this.winCombo[i][2]] !== undefined &&
                     board[this.winCombo[i][0]] === undefined) {
-                    // pass the empty 3rd position when square is free
                     this.aiBlockTwoInRow(board, this.winCombo[i][0]);
                     return true;
                 }
@@ -142,8 +140,8 @@ Author: Khalid Omar Ali
             }
         },
 
-        won: function() {
-            var result = this.checkForWinningMove(this.boardArr);
+        won: function(board) {
+            var result = this.checkForWinningMove(board);
             if (result === true) {
                 if (this.xTurn === false) {
                     alert("X wins!");
@@ -155,8 +153,8 @@ Author: Khalid Omar Ali
             }
         },
 
-        isGameOver: function() {
-            return this.won() || this.drawn();
+        isGameOver: function(board) {
+            return this.won(board) || this.drawn();
         },
 
         renderPlayer1Move: function(board, square) {
@@ -248,7 +246,7 @@ Author: Khalid Omar Ali
                 this.ai(board);
             }
             // check if the game is over and show the game result
-            this.isGameOver();
+            this.isGameOver(board);
         }
     };
     // a new instance of the TicTacToe class
