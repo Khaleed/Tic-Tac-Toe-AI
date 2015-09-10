@@ -18,12 +18,9 @@ Author: Khalid Omar Ali
     TicTacToe.prototype = {
         // set initial game state
         boardElem: undefined,
-        resetElem: undefined,
-        resultElem: undefined,
         statusElem: undefined,
         moves: 0,
         xTurn: true,
-        gameOver: false,
         boardArr: [],
         winCombo: [
             [0, 1, 2],
@@ -47,7 +44,6 @@ Author: Khalid Omar Ali
                 this.squares[j].value = "";
             }
             this.moves = 0;
-            this.gameOver = false;
             // X is always the first player
             this.xTurn = true;
             this.statusElem.innerHTML = "It's the turn of X";
@@ -56,14 +52,13 @@ Author: Khalid Omar Ali
         // initialise game
         init: function() {
             // get main elements
-            this.resetElem = document.getElementById("start-button");
+            var resetElem = document.getElementById("start-button");
             this.boardElem = document.getElementById("game-board");
-            this.resultElem = document.getElementById("results");
             this.statusElem = document.getElementById("status");
             this.squares = document.getElementsByTagName("input");
             this.resetGame();
             // bind main event handlers       
-            this.resetElem.onclick = function() {
+            resetElem.onclick = function() {
                 this.resetGame();
             }.bind(this); // inner function has access to the this value of the outer function
             this.boardElem.onclick = function(e) {
@@ -73,7 +68,7 @@ Author: Khalid Omar Ali
                 // event target is the object which the event is associated with
                 src = e.boardElem || e.target;
                 // pass boardArr and object containing the square element and its' position
-                this.renderAllMoves(this.boardArr, {
+                this.updateGame({
                     pos: src.getAttribute("data-position"),
                     elem: src
                 });
@@ -84,47 +79,47 @@ Author: Khalid Omar Ali
             this.statusElem.innerHTML = "It's the turn of " + (this.xTurn ? "X" : "O");
         },
 
-        isSquareAvailable: function(board, position) {
-            return board[position] === undefined;
+        isSquareAvailable: function(pos) {
+            return this.boardArr[pos] === undefined;
         },
 
         // check 3 rows, 3 columns and 2 diagonals, using winCombo array that holds all winning permutations 
-        checkForWinningMove: function(board) {
+        checkForWinningMove: function() {
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
-                if (board[this.winCombo[i][0]] === board[this.winCombo[i][1]] && board[this.winCombo[i][1]] ===
-                    board[this.winCombo[i][2]] && board[this.winCombo[i][1]] !== undefined) {
+                if (this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] ===
+                    this.boardArr[this.winCombo[i][2]] && this.boardArr[this.winCombo[i][1]] !== undefined) {
                     return true;
                 }
             }
         },
 
         // check if first and second positions have the same value
-        aiCheckFirstAndSecondInRow: function(board) {
+        aiCheckFirstAndSecondInRow: function() {
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
-                if (this.xTurn !== true && board[this.winCombo[i][0]] === board[this.winCombo[i][1]] && board[this.winCombo[i][1]] !== undefined &&
-                    board[this.winCombo[i][2]] === undefined) {
-                    this.aiBlockTwoInRow(board, this.winCombo[i][2]);
+                if (this.xTurn !== true && this.boardArr[this.winCombo[i][0]] === this.boardArr[this.winCombo[i][1]] && this.boardArr[this.winCombo[i][1]] !== undefined &&
+                    this.boardArr[this.winCombo[i][2]] === undefined) {
+                    this.aiBlockTwoInRow(this.winCombo[i][2]);
                     return true;
                 }
             }
         },
 
         // check second and third positions have the same value
-        aiCheckSecondAndThirdInRow: function(board) {
+        aiCheckSecondAndThirdInRow: function() {
             var i;
             for (i = 0; i < this.winCombo.length; i += 1) {
-                if (this.xTurn !== true && board[this.winCombo[i][1]] === board[this.winCombo[i][2]] && board[this.winCombo[i][2]] !== undefined &&
-                    board[this.winCombo[i][0]] === undefined) {
-                    this.aiBlockTwoInRow(board, this.winCombo[i][0]);
+                if (this.xTurn !== true && this.boardArr[this.winCombo[i][1]] === this.boardArr[this.winCombo[i][2]] && this.boardArr[this.winCombo[i][2]] !== undefined &&
+                    this.boardArr[this.winCombo[i][0]] === undefined) {
+                    this.aiBlockTwoInRow(this.winCombo[i][0]);
                     return true;
                 }
             }
         },
 
-        aiCheckTwoInRow: function(board) {
-            return this.aiCheckFirstAndSecondInRow(board) || this.aiCheckSecondAndThirdInRow(board);
+        aiCheckTwoInRow: function() {
+            return this.aiCheckFirstAndSecondInRow() || this.aiCheckSecondAndThirdInRow();
         },
 
         getValidMoves: function() {
@@ -140,8 +135,8 @@ Author: Khalid Omar Ali
             }
         },
 
-        won: function(board) {
-            var result = this.checkForWinningMove(board);
+        won: function() {
+            var result = this.checkForWinningMove();
             if (result === true) {
                 if (this.xTurn === false) {
                     alert("X wins!");
@@ -153,110 +148,83 @@ Author: Khalid Omar Ali
             }
         },
 
-        isGameOver: function(board) {
-            return this.won(board) || this.drawn();
+        isGameOver: function() {
+            return this.won() || this.drawn();
         },
 
-        renderPlayer1Move: function(board, square) {
-            this.moves += 1;
-            board[square.pos] = "X";
-            square.elem.value = board[square.pos];
+        incMove: function() {
+            this.moves += 1
+            this.turnStatus();
+        },
+
+        renderHumanMove: function(square) {
+            this.boardArr[square.pos] = "X";
+            square.elem.value = this.boardArr[square.pos];
             this.xTurn = false;
-            this.turnStatus();
+            this.incMove();
         },
 
-        renderAiMove: function(board, pos) {
+        renderAiMove: function(pos) {
             console.log("position is now at " + pos);
-            this.moves += 1;
-            board[pos] = "O";
-            this.squares[pos].value = board[pos];
+            this.boardArr[pos] = "O";
+            this.squares[pos].value = this.boardArr[pos];
             this.xTurn = true;
-            this.turnStatus();
+            this.incMove();
         },
 
         aiTurn: function() {
-            return this.xTurn !== true && this.gameOver !== true;
+            return this.xTurn !== true && this.moves !== 9 && !this.checkForWinningMove();
         },
 
-        getRandomPos: function() {
-            var posList = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-            var randIndex = Math.floor(Math.random() * posList.length);
-            var selectPos;
-            if (posList.length === 0) {
-                console.log("No random positions left");
-            } else {
-                // splice is a built-in mutator method
-                selectPos = posList.splice(randIndex, 1);
+        getRandPos: function() {
+            return Math.floor(Math.random() * 9);
+        },
+
+        getValidAiRandPos: function() {
+            var randPos = this.getRandPos();
+            while (!this.isSquareAvailable(randPos) && this.moves !== 9) {
+                randPos = this.getRandPos();
             }
-            return selectPos[0];
+            return randPos;
         },
 
-        aiConflictManager: function(board, randPos) {
-            console.log("original randPos is: " + randPos);
-            var condition = !this.isSquareAvailable(board, randPos);;
-            // keep looping while a square is not available
-            while (condition) {
-                randPos = this.getRandomPos();
-                if(this.isSquareAvailable(board, randPos)) {
-                    this.renderAiMove(board, randPos);    
-                }
-                // as soon as square is available, exit loop
-                condition = this.isSquareAvailable(board, randPos);
-                console.log("after conflict is managed, new randPos passed to render Ai is " + randPos);
-            }
+        aiRandomMove: function(randPos) {
+            randPos = this.getValidAiRandPos();
+            this.renderAiMove(randPos);
         },
 
-        aiRandomMove: function(board, randPos) {
-            randPos = this.getRandomPos();
-            if (this.isSquareAvailable(board, randPos)) {
-                console.log("randPos when isSquareAvailable is called is " + randPos);
-                return this.renderAiMove(board, randPos);
-            } else {
-                return this.aiConflictManager(board, randPos);
-            }
-        },
-
-        aiBlockTwoInRow: function(board, blockPos) {
-            console.log("position to block is now: " + blockPos);
-            if (this.isSquareAvailable(board, blockPos)) {
+        aiBlockTwoInRow: function(blockPos) {
+            if (this.isSquareAvailable(blockPos)) {
                 console.log("blockPos to check if a free square is available is: " + blockPos);
-                this.renderAiMove(board, blockPos);
+                this.renderAiMove(blockPos);
             }
         },
 
-        ai: function(board) {
-            // if it is the turn of AI and there are no two same values in a row 
-            if (this.aiTurn() && this.aiCheckTwoInRow(board) !== true) {
-                // make a random move to a free spot
-               return this.aiRandomMove(board);
+        ai: function() {
+            // if it is the turn of AI and the opponent hasn't got two in a row 
+            if (this.aiTurn() && this.aiCheckTwoInRow() !== true) {
+                // just make a random move to a free spot
+                this.aiRandomMove();
             }
         },
 
         // render player 1 and 2 moves
-        renderAllMoves: function(board, square) {
+        updateGame: function(square) {
             // stop drawing on a square that's already taken
             if (square.elem.value !== "") {
                 return;
             }
             // if it is the turn of first player and a square is free and game is not over
-            if (this.xTurn === true && this.isSquareAvailable(board, square.pos) && this.gameOver === false) {
-                this.renderPlayer1Move(board, square);
-            }
-            if (!this.isGameOver()) {
-                this.ai(board);
+            if (this.xTurn === true && this.isSquareAvailable(square.pos)) {
+                this.renderHumanMove(square);
+                this.ai();
             }
             // check if the game is over and show the game result
-            this.isGameOver(board);
+            if (this.moves >= 5) {
+                this.isGameOver();
+            }
         }
     };
     // a new instance of the TicTacToe class
     var myTicTacToe = new TicTacToe();
 })();
-
-
-
-
-
-
-
-
