@@ -9,6 +9,6 @@ The idea behind this project is to dive deeper into learning native JavaScript (
 
 Instead of using Min-Max algorithm, the logic behind the game is based on basic logic because it runs faster!  
 
-You can play it here http://github.io/khaleed/Tic-Tac-Toe-AI
+You can play it here http://khaleed.github.io/Tic-Tac-Toe-AI
 
 <a href='http://www.recurse.com' title='Made with love at the Recurse Center'><img src='https://cloud.githubusercontent.com/assets/2883345/11322975/9e575dce-910b-11e5-9f47-1fb1b530a4bd.png' height='75px'/></a>
