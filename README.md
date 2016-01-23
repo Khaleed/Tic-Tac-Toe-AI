@@ -7,7 +7,7 @@ Tictactoe game with a human player against a professional AI player that can pla
 
 The idea behind this project is to dive deeper into learning native JavaScript (ES5) and think about designing and making a game from scratch without libraries or frameworks. 
 
-Instead of using Min-Max algorithm, the logic behind the game is based on basic logic because it runs faster!  
+Instead of using Min-Max algorithm, the logic behind the game is based on basic logic. This runs much faster and is more educational to figure things out on your own! 
 
 You can play it here http://khaleed.github.io/Tic-Tac-Toe-AI
 
